@@ -1,11 +1,25 @@
 {
-  "generator-karma": {
-    "base-path": "../",
-    "frameworks": "jasmine",
-    "browsers": "PhantomJS",
-    "app-files": "app/scripts/**/*.js",
-    "files-comments": "bower:js,endbower",
-    "bower-components-path": "bower_components",
-    "test-files": "test/mock/**/*.js,test/spec/**/*.js"
+  "generator-jhipster": {
+    "baseName": "stira",
+    "packageName": "com.noptech.stira",
+    "packageFolder": "com/noptech/stira",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "no",
+    "useSass": true,
+    "buildTool": "gradle",
+    "frontendBuilder": "gulp",
+    "enableTranslation": false,
+    "enableSocialSignIn": false,
+    "rememberMeKey": "15e9e2ed86565433c4dc13fd9c2a3afb198905cd",
+    "testFrameworks": [
+      "cucumber",
+      "protractor"
+    ]
   }
 }
