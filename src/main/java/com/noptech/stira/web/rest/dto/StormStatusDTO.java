@@ -6,7 +6,6 @@ public class StormStatusDTO {
     private String status;
 
     public StormStatusDTO() {
-        this.id = 5;
     }
 
     public long getId() {

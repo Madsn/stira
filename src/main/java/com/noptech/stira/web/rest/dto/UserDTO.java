@@ -2,10 +2,11 @@ package com.noptech.stira.web.rest.dto;
 
 import com.noptech.stira.domain.Authority;
 import com.noptech.stira.domain.User;
-
 import org.hibernate.validator.constraints.Email;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Set;
 import java.util.stream.Collectors;
 /**

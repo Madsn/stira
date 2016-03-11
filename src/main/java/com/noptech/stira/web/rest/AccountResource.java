@@ -1,7 +1,6 @@
 package com.noptech.stira.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.noptech.stira.domain.Authority;
 import com.noptech.stira.domain.PersistentToken;
 import com.noptech.stira.domain.User;
 import com.noptech.stira.repository.PersistentTokenRepository;
@@ -12,7 +11,6 @@ import com.noptech.stira.service.UserService;
 import com.noptech.stira.web.rest.dto.KeyAndPasswordDTO;
 import com.noptech.stira.web.rest.dto.UserDTO;
 import com.noptech.stira.web.rest.util.HeaderUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.

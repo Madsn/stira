@@ -2,7 +2,6 @@ package com.noptech.stira;
 
 import com.noptech.stira.config.Constants;
 import com.noptech.stira.config.JHipsterProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

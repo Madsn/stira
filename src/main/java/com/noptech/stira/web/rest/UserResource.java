@@ -9,7 +9,6 @@ import com.noptech.stira.security.AuthoritiesConstants;
 import com.noptech.stira.service.MailService;
 import com.noptech.stira.service.UserService;
 import com.noptech.stira.web.rest.dto.ManagedUserDTO;
-import com.noptech.stira.web.rest.dto.UserDTO;
 import com.noptech.stira.web.rest.util.HeaderUtil;
 import com.noptech.stira.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -25,10 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

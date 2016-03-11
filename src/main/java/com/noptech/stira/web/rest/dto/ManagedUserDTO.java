@@ -1,8 +1,8 @@
 package com.noptech.stira.web.rest.dto;
 
-import java.time.ZonedDateTime;
-
 import com.noptech.stira.domain.User;
+
+import java.time.ZonedDateTime;
 
 /**
  * A DTO extending the UserDTO, which is meant to be used in the user management UI.

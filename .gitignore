@@ -3,6 +3,7 @@
 ######################
 /src/main/webapp/assets/styles/main.css
 /src/main/webapp/dist
+/src/main/resources/credentials.properties
 
 ######################
 # Node

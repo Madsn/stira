@@ -5,11 +5,11 @@ import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,16 +23,23 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/api")
+@PropertySource("classpath:credentials.properties")
 public class StormResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+
+    @Value("${stormcredentials.user}")
+    private String stormUser;
+    @Value("${stormcredentials.password}")
+    private String stormPass;
 
     @RequestMapping(value = "/storm/{ticketIdParam:.+}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public StormStatusDTO getStatus(@PathVariable String ticketIdParam) {
+    public StormStatusDTO getStatus(@PathVariable Long ticketIdParam) {
         StormStatusDTO stormStatus = new StormStatusDTO();
+        stormStatus.setId(ticketIdParam);
 
         WebDriver driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -40,8 +47,8 @@ public class StormResource {
 
         WebElement usernameField = driver.findElement(By.id("email"));
         WebElement passwordField = driver.findElement(By.id("password"));
-        usernameField.sendKeys("");
-        passwordField.sendKeys("");
+        usernameField.sendKeys(stormUser);
+        passwordField.sendKeys(stormPass);
 
         WebElement form = driver.findElement(By.cssSelector(".loginBox input[type=submit]"));
         form.submit();
@@ -57,7 +64,6 @@ public class StormResource {
 
         WebElement statusElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2)"));
         stormStatus.setStatus(statusElem.getText());
-
         driver.close();
         return stormStatus;
     }
