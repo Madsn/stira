@@ -1,7 +1,6 @@
 package com.noptech.stira.service;
 
 import com.noptech.stira.domain.Authority;
-import com.noptech.stira.domain.PersistentToken;
 import com.noptech.stira.domain.User;
 import com.noptech.stira.repository.AuthorityRepository;
 import com.noptech.stira.repository.PersistentTokenRepository;
@@ -9,8 +8,6 @@ import com.noptech.stira.repository.UserRepository;
 import com.noptech.stira.security.SecurityUtils;
 import com.noptech.stira.service.util.RandomUtil;
 import com.noptech.stira.web.rest.dto.ManagedUserDTO;
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,9 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
 import javax.inject.Inject;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service class for managing users.

@@ -1,5 +1,7 @@
 package com.noptech.stira.web.rest.dto;
 
+import com.atlassian.jira.rest.client.api.domain.Issue;
+
 public class JiraStatusDTO {
     private long id;
     private short priority;
@@ -30,5 +32,10 @@ public class JiraStatusDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void extractInfoFromIssue(Issue issue) {
+        this.setId(issue.getId());
+        this.setStatus(issue.getStatus().toString());
     }
 }

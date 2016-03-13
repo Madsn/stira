@@ -21,9 +21,9 @@ public class StormService {
 
     private final Logger log = LoggerFactory.getLogger(StormService.class);
 
-    @Value("${stormcredentials.user}")
+    @Value("${storm.user}")
     private String stormUser;
-    @Value("${stormcredentials.password}")
+    @Value("${storm.password}")
     private String stormPass;
 
 

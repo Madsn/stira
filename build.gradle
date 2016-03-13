@@ -182,7 +182,6 @@ dependencies {
     //Additional dep's, not added by jHipster
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.+'
     compile group: 'com.atlassian.jira', name: 'jira-rest-java-client-core', version: '3.0.0'
-    compile group: 'com.atlassian.jira', name: 'jira-rest-java-client-api', version: '3.0.0'
 }
 
 compileJava.dependsOn(processResources)
