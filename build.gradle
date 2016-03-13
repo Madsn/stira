@@ -5,6 +5,7 @@ buildscript {
         maven { url 'http://repo.spring.io/plugins-release' }
         maven { url 'http://repo.spring.io/milestone' }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://maven-repository.com/" }
     }
     dependencies {
         classpath group: 'org.sonarqube.gradle', name: 'gradle-sonarqube-plugin', version: '1.0'
@@ -88,6 +89,7 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/releases' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'http://repo.maven.apache.org/maven2' }
+    maven { url "https://maven.atlassian.com/repository/public/" }
 }
 
 dependencies {
@@ -179,6 +181,8 @@ dependencies {
 
     //Additional dep's, not added by jHipster
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.+'
+    compile group: 'com.atlassian.jira', name: 'jira-rest-java-client-core', version: '3.0.0'
+    compile group: 'com.atlassian.jira', name: 'jira-rest-java-client-api', version: '3.0.0'
 }
 
 compileJava.dependsOn(processResources)
