@@ -89,7 +89,6 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/releases' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'http://repo.maven.apache.org/maven2' }
-    maven { url "https://maven.atlassian.com/repository/public/" }
 }
 
 dependencies {
@@ -181,7 +180,7 @@ dependencies {
 
     //Additional dep's, not added by jHipster
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.+'
-    compile group: 'com.atlassian.jira', name: 'jira-rest-java-client-core', version: '3.0.0'
+    compile group: 'net.rcarz', name: 'jira-client', version: '0.5'
 }
 
 compileJava.dependsOn(processResources)

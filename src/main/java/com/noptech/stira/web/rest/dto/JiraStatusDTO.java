@@ -1,28 +1,28 @@
 package com.noptech.stira.web.rest.dto;
 
-import com.atlassian.jira.rest.client.api.domain.Issue;
+import net.rcarz.jiraclient.Issue;
 
 public class JiraStatusDTO {
-    private long id;
-    private short priority;
+    private String key;
+    private String priority;
     private String status;
 
     public JiraStatusDTO() {
     }
 
-    public long getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public short getPriority() {
+    public String getPriority() {
         return this.priority;
     }
 
-    public void setPriority(short priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 
@@ -35,7 +35,8 @@ public class JiraStatusDTO {
     }
 
     public void extractInfoFromIssue(Issue issue) {
-        this.setId(issue.getId());
+        this.setKey(issue.getKey());
+        this.setPriority(issue.getPriority().getName());
         this.setStatus(issue.getStatus().toString());
     }
 }
