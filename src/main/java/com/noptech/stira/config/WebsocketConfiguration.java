@@ -1,6 +1,7 @@
 package com.noptech.stira.config;
 
 import com.noptech.stira.security.AuthoritiesConstants;
+import org.apache.http.auth.BasicUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,21 @@ public class WebsocketConfiguration extends AbstractWebSocketMessageBrokerConfig
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocket/tracker")
+            .setHandshakeHandler(new DefaultHandshakeHandler() {
+                @Override
+                protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+                    Principal principal = request.getPrincipal();
+                    if (principal == null) {
+                        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
+                        principal = new AnonymousAuthenticationToken("WebsocketConfiguration", "anonymous", authorities);
+                    }
+                    return principal;
+                }
+            })
+            .withSockJS()
+            .setInterceptors(httpSessionHandshakeInterceptor());
+        registry.addEndpoint("/websocket/stira")
             .setHandshakeHandler(new DefaultHandshakeHandler() {
                 @Override
                 protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {

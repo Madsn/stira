@@ -1,5 +1,6 @@
 package com.noptech.stira.service;
 
+import com.noptech.stira.security.AuthoritiesConstants;
 import com.noptech.stira.web.rest.dto.JiraStatusDTO;
 import net.rcarz.jiraclient.BasicCredentials;
 import net.rcarz.jiraclient.JiraClient;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
+@Secured(AuthoritiesConstants.USER)
 @PropertySource("classpath:credentials.properties")
 public class JiraService {
 

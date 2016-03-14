@@ -1,0 +1,45 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "stormKey",
+            "fieldType": "Long"
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "jiraKey",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldId": 3,
+            "fieldName": "jiraTitle",
+            "fieldType": "String"
+        },
+        {
+            "fieldId": 4,
+            "fieldName": "stormTitle",
+            "fieldType": "String"
+        },
+        {
+            "fieldId": 5,
+            "fieldName": "jiraLastUpdated",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldId": 6,
+            "fieldName": "stormLastUpdated",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldId": 7,
+            "fieldName": "mutedUntil",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "changelogDate": "20160314211153",
+    "dto": "no",
+    "service": "no",
+    "pagination": "no"
+}

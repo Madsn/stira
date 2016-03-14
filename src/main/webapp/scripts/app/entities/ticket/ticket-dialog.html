@@ -1,0 +1,79 @@
+
+<form name="editForm" role="form" novalidate ng-submit="save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="clear()">&times;</button>
+        <h4 class="modal-title" id="myTicketLabel">Create or edit a Ticket</h4>
+    </div>
+    <div class="modal-body">
+        <jh-alert-error></jh-alert-error>
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="ticket.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_stormKey">StormKey</label>
+            <input type="number" class="form-control" name="stormKey" id="field_stormKey"
+                    ng-model="ticket.stormKey"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_jiraKey">JiraKey</label>
+            <input type="text" class="form-control" name="jiraKey" id="field_jiraKey"
+                    ng-model="ticket.jiraKey"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_jiraTitle">JiraTitle</label>
+            <input type="text" class="form-control" name="jiraTitle" id="field_jiraTitle"
+                    ng-model="ticket.jiraTitle"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_stormTitle">StormTitle</label>
+            <input type="text" class="form-control" name="stormTitle" id="field_stormTitle"
+                    ng-model="ticket.stormTitle"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_jiraLastUpdated">JiraLastUpdated</label>
+                <div class="input-group">
+                    <input id="field_jiraLastUpdated" type="text" class="form-control" uib-datepicker-popup="{{dateformat}}" ng-model="ticket.jiraLastUpdated" is-open="datePickerForJiraLastUpdated.status.opened"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="datePickerForJiraLastUpdatedOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_stormLastUpdated">StormLastUpdated</label>
+            <div class="input-group">
+                <input id="field_stormLastUpdated" type="text" class="form-control" uib-datepicker-popup="{{dateformat}}" ng-model="ticket.stormLastUpdated" is-open="datePickerForStormLastUpdated.status.opened"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="datePickerForStormLastUpdatedOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_mutedUntil">MutedUntil</label>
+            <div class="input-group">
+                <input id="field_mutedUntil" type="text" class="form-control" uib-datepicker-popup="{{dateformat}}" ng-model="ticket.mutedUntil" is-open="datePickerForMutedUntil.status.opened"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="datePickerForMutedUntil($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>
