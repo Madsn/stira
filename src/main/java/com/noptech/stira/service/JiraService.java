@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,5 +53,15 @@ public class JiraService {
     private void createJiraClient() {
         BasicCredentials creds = new BasicCredentials(jiraUser, jiraPass);
         jiraClient = new JiraClient(jiraUrl, creds);
+    }
+
+    @Scheduled(fixedRate = 5000)
+    public void runJiraJob() {
+        // First check jira for updated issues, add to queue
+
+        // Update Queue count
+
+        // Process oldest updated issue from queue
+        log.debug("Running jira job");
     }
 }

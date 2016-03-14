@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,5 +57,16 @@ public class StormService {
         stormStatus.setStatus(statusElem.getText());
         driver.close();
         return stormStatus;
+    }
+
+
+    @Scheduled(fixedRate = 5000)
+    public void runStormJob() {
+        // First check storm for updated issues, add to queue
+
+        // Update storm queue count
+
+        // Process oldest updated issue from queue
+        log.debug("Running storm job");
     }
 }
