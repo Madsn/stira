@@ -1,0 +1,19 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "syncedTo",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "changelogDate": "20160315212949",
+    "dto": "no",
+    "service": "no",
+    "pagination": "no"
+}
