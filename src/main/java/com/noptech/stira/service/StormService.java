@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
-@Secured(AuthoritiesConstants.USER)
 @PropertySource("classpath:credentials.properties")
 public class StormService {
 

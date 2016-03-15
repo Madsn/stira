@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
-@Secured(AuthoritiesConstants.USER)
 @PropertySource("classpath:credentials.properties")
 public class JiraService {
 

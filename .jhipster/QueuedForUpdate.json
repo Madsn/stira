@@ -1,0 +1,25 @@
+{
+    "relationships": [],
+    "fields": [
+        {
+            "fieldId": 1,
+            "fieldName": "ticketSource",
+            "fieldType": "TicketSource",
+            "fieldValues": "STORM, JIRA"
+        },
+        {
+            "fieldId": 2,
+            "fieldName": "addedToQueue",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldId": 3,
+            "fieldName": "ticketKey",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20160315224501",
+    "dto": "no",
+    "service": "serviceClass",
+    "pagination": "no"
+}

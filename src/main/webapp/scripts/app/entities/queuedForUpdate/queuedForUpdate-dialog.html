@@ -1,0 +1,49 @@
+
+<form name="editForm" role="form" novalidate ng-submit="save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="clear()">&times;</button>
+        <h4 class="modal-title" id="myQueuedForUpdateLabel">Create or edit a QueuedForUpdate</h4>
+    </div>
+    <div class="modal-body">
+        <jh-alert-error></jh-alert-error>
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="queuedForUpdate.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_ticketSource">TicketSource</label>
+            <select class="form-control" name="ticketSource" ng-model="queuedForUpdate.ticketSource" id="field_ticketSource">
+                <option value="STORM">STORM</option>
+                <option value="JIRA">JIRA</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_addedToQueue">AddedToQueue</label>
+                <div class="input-group">
+                    <input id="field_addedToQueue" type="text" class="form-control" uib-datepicker-popup="{{dateformat}}" ng-model="queuedForUpdate.addedToQueue" is-open="datePickerForAddedToQueue.status.opened"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="datePickerForAddedToQueueOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_ticketKey">TicketKey</label>
+            <input type="text" class="form-control" name="ticketKey" id="field_ticketKey"
+                    ng-model="queuedForUpdate.ticketKey"
+                     />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,60 @@
+<div>
+    <h2>QueuedForUpdates</h2>
+    <jh-alert></jh-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="queuedForUpdate.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span 
+                       >Create new QueuedForUpdate
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th><span>ID</span></th>
+                    <th><span>TicketSource</span></th>
+                    <th><span>AddedToQueue</span></th>
+                    <th><span>TicketKey</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="queuedForUpdate in queuedForUpdates track by queuedForUpdate.id">
+                    <td><a ui-sref="queuedForUpdate.detail({id:queuedForUpdate.id})">{{queuedForUpdate.id}}</a></td>
+                    <td translate="{{'stiraApp.TicketSource.' + queuedForUpdate.ticketSource}}">{{queuedForUpdate.ticketSource}}</td>
+                        <td>{{queuedForUpdate.addedToQueue | date:'mediumDate'}}</td>
+                    <td>{{queuedForUpdate.ticketKey}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="queuedForUpdate.detail({id:queuedForUpdate.id})"
+                                    class="btn btn-info btn-sm"> 
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="queuedForUpdate.edit({id:queuedForUpdate.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="queuedForUpdate.delete({id:queuedForUpdate.id})"
+                                    class="btn btn-danger btn-sm">                                    
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
