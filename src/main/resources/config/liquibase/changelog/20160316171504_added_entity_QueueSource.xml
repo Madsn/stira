@@ -22,11 +22,15 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="ticket_source" type="varchar(255)"/>
-            
-            <column name="last_added_ticket" type="date"/>
-            
+
+            <column name="last_added_ticket" type="datetime"/>
+
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
-        
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/queue_sources.csv"
+                  separator=";"
+                  tableName="queue_source"/>
     </changeSet>
 </databaseChangeLog>

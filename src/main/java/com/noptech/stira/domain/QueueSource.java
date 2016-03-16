@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.noptech.stira.domain.enumeration.TicketSource;
@@ -18,6 +19,8 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class QueueSource implements Serializable {
 
+    public static final String FIND_BY_TICKET_SOURCE = "QueueSource.findByTicketSource";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -25,10 +28,10 @@ public class QueueSource implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "ticket_source")
     private TicketSource ticketSource;
-    
+
     @Column(name = "last_added_ticket")
-    private LocalDate lastAddedTicket;
-    
+    private LocalDateTime lastAddedTicket;
+
     public Long getId() {
         return id;
     }
@@ -40,16 +43,16 @@ public class QueueSource implements Serializable {
     public TicketSource getTicketSource() {
         return ticketSource;
     }
-    
+
     public void setTicketSource(TicketSource ticketSource) {
         this.ticketSource = ticketSource;
     }
 
-    public LocalDate getLastAddedTicket() {
+    public LocalDateTime getLastAddedTicket() {
         return lastAddedTicket;
     }
-    
-    public void setLastAddedTicket(LocalDate lastAddedTicket) {
+
+    public void setLastAddedTicket(LocalDateTime lastAddedTicket) {
         this.lastAddedTicket = lastAddedTicket;
     }
 

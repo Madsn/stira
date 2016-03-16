@@ -22,13 +22,18 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="ticket_source" type="varchar(255)"/>
-            
-            <column name="added_to_queue" type="date"/>
-            
+
+            <column name="added_to_queue" type="datetime"/>
+
             <column name="ticket_key" type="varchar(255)"/>
-            
+
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
-        
+        <createIndex indexName="idx_queued_for_upd_ticket_key"
+                     tableName="queued_for_update"
+                     unique="true">
+            <column name="ticket_key" type="varchar(255)"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>

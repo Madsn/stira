@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -33,10 +34,10 @@ public class Ticket implements Serializable {
     private String stormTitle;
 
     @Column(name = "jira_last_updated")
-    private LocalDate jiraLastUpdated;
+    private LocalDateTime jiraLastUpdated;
 
     @Column(name = "storm_last_updated")
-    private LocalDate stormLastUpdated;
+    private LocalDateTime stormLastUpdated;
 
 
     @Column(name = "muted_until")
@@ -82,19 +83,19 @@ public class Ticket implements Serializable {
         this.stormTitle = stormTitle;
     }
 
-    public LocalDate getJiraLastUpdated() {
+    public LocalDateTime getJiraLastUpdated() {
         return jiraLastUpdated;
     }
 
-    public void setJiraLastUpdated(LocalDate jiraLastUpdated) {
+    public void setJiraLastUpdated(LocalDateTime jiraLastUpdated) {
         this.jiraLastUpdated = jiraLastUpdated;
     }
 
-    public LocalDate getStormLastUpdated() {
+    public LocalDateTime getStormLastUpdated() {
         return stormLastUpdated;
     }
 
-    public void setStormLastUpdated(LocalDate stormLastUpdated) {
+    public void setStormLastUpdated(LocalDateTime stormLastUpdated) {
         this.stormLastUpdated = stormLastUpdated;
     }
 

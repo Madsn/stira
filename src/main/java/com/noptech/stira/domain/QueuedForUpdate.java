@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.noptech.stira.domain.enumeration.TicketSource;
@@ -25,13 +26,13 @@ public class QueuedForUpdate implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "ticket_source")
     private TicketSource ticketSource;
-    
+
     @Column(name = "added_to_queue")
-    private LocalDate addedToQueue;
-    
+    private LocalDateTime addedToQueue;
+
     @Column(name = "ticket_key")
     private String ticketKey;
-    
+
     public Long getId() {
         return id;
     }
@@ -43,23 +44,23 @@ public class QueuedForUpdate implements Serializable {
     public TicketSource getTicketSource() {
         return ticketSource;
     }
-    
+
     public void setTicketSource(TicketSource ticketSource) {
         this.ticketSource = ticketSource;
     }
 
-    public LocalDate getAddedToQueue() {
+    public LocalDateTime getAddedToQueue() {
         return addedToQueue;
     }
-    
-    public void setAddedToQueue(LocalDate addedToQueue) {
+
+    public void setAddedToQueue(LocalDateTime addedToQueue) {
         this.addedToQueue = addedToQueue;
     }
 
     public String getTicketKey() {
         return ticketKey;
     }
-    
+
     public void setTicketKey(String ticketKey) {
         this.ticketKey = ticketKey;
     }

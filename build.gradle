@@ -180,6 +180,7 @@ dependencies {
 
     //Additional dep's, not added by jHipster
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.+'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-htmlunit-driver', version: '2.+'
     compile group: 'net.rcarz', name: 'jira-client', version: '0.5'
 }
 
