@@ -1,14 +1,14 @@
 package com.noptech.stira.service;
 
 import com.noptech.stira.domain.QueueSource;
+import com.noptech.stira.domain.QueuedForUpdate;
 import com.noptech.stira.domain.Ticket;
 import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.repository.QueueSourceRepository;
+import com.noptech.stira.repository.TicketRepository;
 import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -47,11 +47,17 @@ public class StormService {
     @Inject
     private QueuedForUpdateService queuedForUpdateService;
 
+    @Inject
+    private TicketRepository ticketRepository;
+
     private WebDriver driver;
     QueueSource stormSource;
 
     private void setupDriver() {
-        driver = new HtmlUnitDriver();
+        if (driver != null) {
+            driver.quit();
+        }
+        driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
@@ -118,9 +124,44 @@ public class StormService {
             // TODO -  Update storm queue count (add column to entity)
 
             // Process oldest updated issue from queue
+            QueuedForUpdate next = queuedForUpdateService.getNext(TicketSource.STORM);
+            log.debug("NEXT: " + (next != null ? next.toString() : null));
+            if (next != null) {
+                processTicket(next);
+                queuedForUpdateService.delete(next.getId());
+            }
         } finally {
             driver.quit();
         }
+    }
+
+    private void processTicket(QueuedForUpdate next) {
+        login();
+        driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + next.getTicketKey());
+        Ticket t = getStormTicketInfo(next.getTicketKey());
+
+
+        ticketRepository.save(t);
+    }
+
+    private Ticket getStormTicketInfo(String ticketKey) {
+        log.debug("Getting storm ticket info for: https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketKey);
+        Ticket t = new Ticket();
+        t.setStormKey(Long.valueOf(ticketKey));
+
+        /*
+        WebElement titleElem = driver.findElement(By.cssSelector(".ticket-details-info > p:nth-child(11)"));
+        t.setStormTitle(titleElem.getText().trim());
+        */
+
+        WebElement lastUpdatedElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2)"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        t.setStormLastUpdated(LocalDateTime.parse(lastUpdatedElem.getText(), formatter));
+        /*
+        WebElement statusElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2)"));
+        t.setStatus(statusElem.getText());
+        */
+        return t;
     }
 
     private Pair<LocalDateTime, List<Ticket>> getUpdatedTickets() throws Exception {
@@ -131,8 +172,7 @@ public class StormService {
         LocalDateTime cutoffDateTime = stormSource.getLastAddedTicket() == null
             ? LocalDateTime.now().minusDays(30) : stormSource.getLastAddedTicket();
 
-        Pair<LocalDateTime, List<Ticket>> ticketAndMaxDate = getTicketsUpdatedAfter(cutoffDateTime);
-        return ticketAndMaxDate;
+        return getTicketsUpdatedAfter(cutoffDateTime);
     }
 
     private List<Ticket> getAllTicketsOnDashboard() throws Exception {
@@ -175,14 +215,13 @@ public class StormService {
     }
 
     private LocalDate getDateFromDayOfWeek(String timestamp) throws Exception {
-        Calendar cal = new GregorianCalendar();
+        Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         int currentDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-        log.debug("Current day of week: " + currentDayOfWeek);
 
-        int timestampDayOfWeek = getDayOfWeekFromString(timestamp.substring(0, 3));
-        if (currentDayOfWeek < timestampDayOfWeek) {
+        int timestampDayOfWeek = getDayOfWeekFromString(timestamp.substring(0, 3), cal);
+        if (currentDayOfWeek <= timestampDayOfWeek) {
             currentDayOfWeek += 7;
         }
         int daysDiff = currentDayOfWeek - timestampDayOfWeek;
@@ -190,22 +229,23 @@ public class StormService {
         return LocalDate.now().minusDays(daysDiff);
     }
 
-    private int getDayOfWeekFromString(String dow) throws Exception {
+    private int getDayOfWeekFromString(String dow, Calendar cal) throws Exception {
+        int firstDayOfWeek = cal.getFirstDayOfWeek();
         switch(dow) {
             case "Mon":
-                return 0;
+                return firstDayOfWeek;
             case "Tue":
-                return 1;
+                return firstDayOfWeek + 1;
             case "Wed":
-                return 2;
+                return firstDayOfWeek + 2;
             case "Thu":
-                return 3;
+                return firstDayOfWeek + 3;
             case "Fri":
-                return 4;
+                return firstDayOfWeek + 4;
             case "Sat":
-                return 5;
+                return firstDayOfWeek + 5;
             case "Sun":
-                return 6;
+                return firstDayOfWeek + 6;
             default:
                 throw new Exception("Invalid day of week: " + dow);
         }
@@ -215,16 +255,17 @@ public class StormService {
         List<Ticket> tickets = getAllTicketsOnDashboard();
         LocalDateTime maxDate = cutoffDateTime;
 
-        Iterator<Ticket> ticketIterator = tickets.iterator();
-        while (ticketIterator.hasNext()) {
-            Ticket t = ticketIterator.next();
-            if (t.getStormLastUpdated().isAfter(cutoffDateTime)) {
-                ticketIterator.remove();
+        List<Ticket> toBeRemoved = new ArrayList<Ticket>();
+        for (Ticket t : tickets) {
+            if (t.getStormLastUpdated().isBefore(cutoffDateTime)) {
+                toBeRemoved.add(t);
+            } else {
                 if (t.getStormLastUpdated().isAfter(maxDate)) {
                     maxDate = t.getStormLastUpdated();
                 }
             }
         }
+        tickets.removeAll(toBeRemoved);
         return new ImmutablePair<>(maxDate, tickets);
         /*
         for (WebElement elem : elements) {

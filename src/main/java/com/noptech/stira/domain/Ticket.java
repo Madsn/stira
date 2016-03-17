@@ -1,5 +1,6 @@
 package com.noptech.stira.domain;
 
+import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.time.LocalDate;

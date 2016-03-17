@@ -29,9 +29,9 @@
 
             <column name="storm_title" type="varchar(255)"/>
 
-            <column name="jira_last_updated" type="date"/>
+            <column name="jira_last_updated" type="datetime"/>
 
-            <column name="storm_last_updated" type="date"/>
+            <column name="storm_last_updated" type="datetime"/>
 
             <column name="muted_until" type="date"/>
 

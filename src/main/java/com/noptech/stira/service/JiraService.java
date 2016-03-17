@@ -57,7 +57,7 @@ public class JiraService {
         jiraClient = new JiraClient(jiraUrl, creds);
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 500000)
     public void runJiraJob() {
         // First check jira for updated issues, add to queue
 

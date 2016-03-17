@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
 
 /**
  * Service Implementation for managing QueuedForUpdate.
@@ -87,5 +85,13 @@ public class QueuedForUpdateService {
     public void delete(Long id) {
         log.debug("Request to delete QueuedForUpdate : {}", id);
         queuedForUpdateRepository.delete(id);
+    }
+
+    public QueuedForUpdate getNext(TicketSource ticketSource) {
+        List<QueuedForUpdate> updates = queuedForUpdateRepository.getOldest(ticketSource);
+        if (updates != null && updates.size() > 0) {
+            return updates.get(0);
+        }
+        return null;
     }
 }
