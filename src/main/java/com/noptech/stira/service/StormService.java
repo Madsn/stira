@@ -7,8 +7,6 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.repository.QueueSourceRepository;
 import com.noptech.stira.repository.TicketRepository;
 import com.noptech.stira.web.rest.dto.StormStatusDTO;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -50,19 +48,15 @@ public class StormService {
     @Inject
     private TicketRepository ticketRepository;
 
-    private WebDriver driver;
     QueueSource stormSource;
 
-    private void setupDriver() {
-        if (driver != null) {
-            driver.quit();
-        }
-        driver = new FirefoxDriver();
+    private WebDriver setupDriver() {
+        WebDriver driver = new HtmlUnitDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        return driver;
     }
 
-    private void login() {
-        setupDriver();
+    private void login(WebDriver driver) {
         driver.get("https://customer.tdchosting.com");
         WebElement form = null;
         try {
@@ -82,11 +76,11 @@ public class StormService {
     }
 
 
-    public StormStatusDTO getStatus(long ticketIdParam) {
+    public StormStatusDTO getStatus(long ticketIdParam, WebDriver driver) {
         StormStatusDTO stormStatus = new StormStatusDTO();
         stormStatus.setId(ticketIdParam);
 
-        login();
+        login(driver);
 
         driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketIdParam);
 
@@ -96,56 +90,99 @@ public class StormService {
 
         WebElement statusElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2)"));
         stormStatus.setStatus(statusElem.getText());
-        driver.quit();
         return stormStatus;
     }
 
+    @Scheduled(fixedDelay = 10000)
+    public void processFromQueue() {
+        // TODO -  Update storm queue count (add column to entity)
 
-    @Scheduled(fixedDelay = 30000)
-    public void runStormJob() throws Exception {
-        log.debug("Running storm job");
-        login();
+        log.debug("Getting next task from queue");
+        // Process oldest updated issue from queue
+        QueuedForUpdate next = queuedForUpdateService.getNext(TicketSource.STORM);
+        log.debug("NEXT: " + (next != null ? next.toString() : null));
+        if (next != null) {
+            WebDriver driver = setupDriver();
+            try {
+                processTicket(next, driver);
+            } finally {
+                driver.quit();
+            }
+            queuedForUpdateService.delete(next.getId());
+        }
+    }
+
+    @Scheduled(fixedDelay = 120000)
+    public void buildQueue() throws Exception {
+        log.debug("Running storm buildQueue job");
+        WebDriver driver = setupDriver();
+        login(driver);
         if (stormSource == null) {
             stormSource = queueSourceRepository.findByTicketSource(TicketSource.STORM);
         }
-        // First check storm for updated issues, add to queue
         try {
-            Pair<LocalDateTime, List<Ticket>> updatedTicketsAndMaxDate = getUpdatedTickets();
-            List<Ticket> updatedTickets = updatedTicketsAndMaxDate.getRight();
-            LocalDateTime maxDate = updatedTicketsAndMaxDate.getLeft();
+            log.debug("Getting updated tickets");
+            List<Ticket> updatedTickets = getUpdatedTickets(driver);
+            if (!(updatedTickets == null || updatedTickets.isEmpty())) {
+                log.debug("Finding maxdate");
+                LocalDateTime maxDate = getMaxDate(updatedTickets, driver);
 
-            queuedForUpdateService.addToQueue(updatedTickets);
-
-            if (stormSource.getLastAddedTicket() == null || stormSource.getLastAddedTicket().isBefore(maxDate)) {
-                stormSource.setLastAddedTicket(maxDate);
-                stormSource = queueSourceRepository.save(stormSource);
-            }
-
-            // TODO -  Update storm queue count (add column to entity)
-
-            // Process oldest updated issue from queue
-            QueuedForUpdate next = queuedForUpdateService.getNext(TicketSource.STORM);
-            log.debug("NEXT: " + (next != null ? next.toString() : null));
-            if (next != null) {
-                processTicket(next);
-                queuedForUpdateService.delete(next.getId());
+                log.debug("Adding updated tickets to queue");
+                queuedForUpdateService.addToQueue(updatedTickets);
+                log.debug("Setting last added ticket in queueSource");
+                if (stormSource.getLastAddedTicket() == null || stormSource.getLastAddedTicket().isBefore(maxDate)) {
+                    stormSource.setLastAddedTicket(maxDate);
+                    stormSource = queueSourceRepository.save(stormSource);
+                }
             }
         } finally {
             driver.quit();
         }
     }
 
-    private void processTicket(QueuedForUpdate next) {
-        login();
-        driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + next.getTicketKey());
-        Ticket t = getStormTicketInfo(next.getTicketKey());
+    /**
+     * @param updatedTickets
+     * @return Max LocalDateTime, including seconds, for the ticket most recently updated
+     */
+    private LocalDateTime getMaxDate(List<Ticket> updatedTickets, WebDriver driver) {
+        updatedTickets.sort(new Comparator<Ticket>() {
+            @Override
+            public int compare(Ticket o1, Ticket o2) {
+                return o2.getStormLastUpdated().compareTo(o1.getStormLastUpdated());
+            }
+        });
+        LocalDateTime maxDate = getUpdatedTimeStamp(updatedTickets.get(0), driver);
+        if (updatedTickets.size() == 1) {
+            return maxDate;
+        }
+        for (int x = 1; x < updatedTickets.size(); x++) {
+            if (updatedTickets.get(x).getStormLastUpdated().isBefore(updatedTickets.get(0).getStormLastUpdated())) {
+                return maxDate;
+            }
+            LocalDateTime tempDate = getUpdatedTimeStamp(updatedTickets.get(x), driver);
+            if (tempDate.isAfter(maxDate)) {
+                maxDate = tempDate;
+            }
+        }
+        return maxDate;
+    }
+
+    private LocalDateTime getUpdatedTimeStamp(Ticket ticket, WebDriver driver) {
+        Ticket detailedTicket = getStormTicketInfo(ticket.getStormKey().toString(), driver);
+        return detailedTicket.getStormLastUpdated();
+    }
+
+    private void processTicket(QueuedForUpdate next, WebDriver driver) {
+        Ticket t = getStormTicketInfo(next.getTicketKey(), driver);
 
 
         ticketRepository.save(t);
     }
 
-    private Ticket getStormTicketInfo(String ticketKey) {
+    private Ticket getStormTicketInfo(String ticketKey, WebDriver driver) {
         log.debug("Getting storm ticket info for: https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketKey);
+        login(driver);
+        driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketKey);
         Ticket t = new Ticket();
         t.setStormKey(Long.valueOf(ticketKey));
 
@@ -164,7 +201,7 @@ public class StormService {
         return t;
     }
 
-    private Pair<LocalDateTime, List<Ticket>> getUpdatedTickets() throws Exception {
+    private List<Ticket> getUpdatedTickets(WebDriver driver) throws Exception {
         if (stormSource == null) {
             throw new Exception("No storm source found in database");
         }
@@ -172,10 +209,10 @@ public class StormService {
         LocalDateTime cutoffDateTime = stormSource.getLastAddedTicket() == null
             ? LocalDateTime.now().minusDays(30) : stormSource.getLastAddedTicket();
 
-        return getTicketsUpdatedAfter(cutoffDateTime);
+        return getTicketsUpdatedAfter(cutoffDateTime, driver);
     }
 
-    private List<Ticket> getAllTicketsOnDashboard() throws Exception {
+    private List<Ticket> getAllTicketsOnDashboard(WebDriver driver) throws Exception {
         List<Ticket> tickets = new ArrayList<Ticket>();
         List<WebElement> elements = driver.findElements(By.tagName("tr"));
         for (WebElement elem : elements) {
@@ -199,6 +236,7 @@ public class StormService {
                                 dateTime = LocalDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00");
                             }
                         }
+                        log.debug("No timestamp found: " + col.getText());
                         ticket.setStormLastUpdated(dateTime);
                         break;
                     case "problem-area": // title
@@ -251,22 +289,17 @@ public class StormService {
         }
     }
 
-    private Pair<LocalDateTime, List<Ticket>> getTicketsUpdatedAfter(LocalDateTime cutoffDateTime) throws Exception {
-        List<Ticket> tickets = getAllTicketsOnDashboard();
-        LocalDateTime maxDate = cutoffDateTime;
+    private List<Ticket> getTicketsUpdatedAfter(LocalDateTime cutoffDateTime, WebDriver driver) throws Exception {
+        List<Ticket> tickets = getAllTicketsOnDashboard(driver);
 
-        List<Ticket> toBeRemoved = new ArrayList<Ticket>();
+        List<Ticket> toBeRemoved = new ArrayList<>();
         for (Ticket t : tickets) {
             if (t.getStormLastUpdated().isBefore(cutoffDateTime)) {
                 toBeRemoved.add(t);
-            } else {
-                if (t.getStormLastUpdated().isAfter(maxDate)) {
-                    maxDate = t.getStormLastUpdated();
-                }
             }
         }
         tickets.removeAll(toBeRemoved);
-        return new ImmutablePair<>(maxDate, tickets);
+        return tickets;
         /*
         for (WebElement elem : elements) {
             if (elem.get.getText().contains(":")) {
