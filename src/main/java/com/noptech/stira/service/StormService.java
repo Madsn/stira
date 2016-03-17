@@ -10,7 +10,6 @@ import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,7 @@ public class StormService {
 
     private WebDriver setupDriver() {
         WebDriver driver = new HtmlUnitDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         return driver;
     }
 
@@ -191,7 +190,7 @@ public class StormService {
         t.setStormTitle(titleElem.getText().trim());
         */
 
-        WebElement lastUpdatedElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2)"));
+        WebElement lastUpdatedElem = driver.findElements(By.className("ticket-details-info")).get(0).findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         t.setStormLastUpdated(LocalDateTime.parse(lastUpdatedElem.getText(), formatter));
         /*
