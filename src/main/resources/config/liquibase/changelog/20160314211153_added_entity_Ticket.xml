@@ -35,6 +35,10 @@
 
             <column name="muted_until" type="date"/>
 
+            <column name="jira_status" type="varchar(255)"/>
+
+            <column name="storm_status" type="varchar(255)"/>
+
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
 

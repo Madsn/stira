@@ -1,7 +1,6 @@
 package com.noptech.stira.repository;
 
 import com.noptech.stira.domain.Authority;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

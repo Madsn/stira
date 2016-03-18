@@ -1,14 +1,18 @@
 package com.noptech.stira.domain;
 
-import com.noptech.stira.web.rest.dto.StormStatusDTO;
+import com.noptech.stira.domain.enumeration.TicketStatus;
+import net.rcarz.jiraclient.Issue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import java.time.LocalDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A Ticket.
@@ -40,9 +44,35 @@ public class Ticket implements Serializable {
     @Column(name = "storm_last_updated")
     private LocalDateTime stormLastUpdated;
 
-
     @Column(name = "muted_until")
     private LocalDate mutedUntil;
+
+    @Column(name = "jira_status")
+    @Enumerated(EnumType.STRING)
+    private TicketStatus jiraStatus;
+
+    @Column(name = "storm_status")
+    @Enumerated(EnumType.STRING)
+    private TicketStatus stormStatus;
+
+    public Ticket(Issue issue) {
+        this.jiraKey = issue.getKey();
+        LocalDateTime updated = LocalDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
+        this.jiraLastUpdated = updated;
+        this.jiraTitle = issue.getSummary();
+        this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
+        String customerRef = issue.getField("customer issue reference").toString();
+        Pattern pattern = Pattern.compile("#\\d+");
+        Matcher matcher = pattern.matcher(customerRef);
+        String stormKey = matcher.group(0).replace("#", "");
+        if (stormKey != null) {
+            this.stormKey = Long.parseLong(stormKey);
+        }
+    }
+
+    public Ticket() {
+
+    }
 
     public Long getId() {
         return id;
@@ -139,6 +169,24 @@ public class Ticket implements Serializable {
             ", jiraLastUpdated='" + jiraLastUpdated + "'" +
             ", stormLastUpdated='" + stormLastUpdated + "'" +
             ", mutedUntil ='" + mutedUntil + "'" +
+            ", jiraStatus ='" + jiraStatus + "'" +
+            ", stormStatus ='" + stormStatus + "'" +
             '}';
+    }
+
+    public TicketStatus getStormStatus() {
+        return stormStatus;
+    }
+
+    public void setStormStatus(TicketStatus stormStatus) {
+        this.stormStatus = stormStatus;
+    }
+
+    public TicketStatus getJiraStatus() {
+        return jiraStatus;
+    }
+
+    public void setJiraStatus(TicketStatus jiraStatus) {
+        this.jiraStatus = jiraStatus;
     }
 }

@@ -1,13 +1,14 @@
 package com.noptech.stira.config;
 
-import com.noptech.stira.domain.util.*;
-
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.time.*;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import com.noptech.stira.domain.util.JSR310DateTimeSerializer;
+import com.noptech.stira.domain.util.JSR310LocalDateDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import java.time.*;
 
 @Configuration
 public class JacksonConfiguration {

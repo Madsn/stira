@@ -6,7 +6,6 @@ import com.noptech.stira.service.QueuedForUpdateService;
 import com.noptech.stira.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +25,10 @@ import java.util.Optional;
 public class QueuedForUpdateResource {
 
     private final Logger log = LoggerFactory.getLogger(QueuedForUpdateResource.class);
-        
+
     @Inject
     private QueuedForUpdateService queuedForUpdateService;
-    
+
     /**
      * POST  /queuedForUpdates -> Create a new queuedForUpdate.
      */

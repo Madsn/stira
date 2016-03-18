@@ -4,8 +4,8 @@ import com.noptech.stira.domain.QueueSource;
 import com.noptech.stira.domain.QueuedForUpdate;
 import com.noptech.stira.domain.Ticket;
 import com.noptech.stira.domain.enumeration.TicketSource;
+import com.noptech.stira.domain.enumeration.TicketStatus;
 import com.noptech.stira.repository.QueueSourceRepository;
-import com.noptech.stira.repository.TicketRepository;
 import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -40,12 +40,10 @@ public class StormService {
 
     @Inject
     private QueueSourceRepository queueSourceRepository;
-
     @Inject
     private QueuedForUpdateService queuedForUpdateService;
-
     @Inject
-    private TicketRepository ticketRepository;
+    private TicketService ticketService;
 
     QueueSource stormSource;
 
@@ -92,7 +90,7 @@ public class StormService {
         return stormStatus;
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000000)
     public void processFromQueue() {
         // TODO -  Update storm queue count (add column to entity)
 
@@ -111,13 +109,16 @@ public class StormService {
         }
     }
 
-    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 12000000)
     public void buildQueue() throws Exception {
         log.debug("Running storm buildQueue job");
         WebDriver driver = setupDriver();
         login(driver);
         if (stormSource == null) {
-            stormSource = queueSourceRepository.findByTicketSource(TicketSource.STORM);
+            stormSource = queueSourceRepository.findOneByTicketSource(TicketSource.STORM);
+            if (stormSource == null) {
+                throw new Exception("No Storm queue source found");
+            }
         }
         try {
             log.debug("Getting updated tickets");
@@ -175,7 +176,7 @@ public class StormService {
         Ticket t = getStormTicketInfo(next.getTicketKey(), driver);
 
 
-        ticketRepository.save(t);
+        ticketService.mergeFromStorm(t);
     }
 
     private Ticket getStormTicketInfo(String ticketKey, WebDriver driver) {
@@ -190,13 +191,13 @@ public class StormService {
         t.setStormTitle(titleElem.getText().trim());
         */
 
-        WebElement lastUpdatedElem = driver.findElements(By.className("ticket-details-info")).get(0).findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
+        WebElement infoContainer = driver.findElements(By.className("ticket-details-info")).get(0);
+        WebElement lastUpdatedElem = infoContainer.findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         t.setStormLastUpdated(LocalDateTime.parse(lastUpdatedElem.getText(), formatter));
-        /*
-        WebElement statusElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2)"));
-        t.setStatus(statusElem.getText());
-        */
+
+        WebElement statusElem = infoContainer.findElements(By.tagName("tr")).get(4).findElement(By.tagName("td"));
+        t.setStormStatus(TicketStatus.parseFromString(statusElem.getText()));
         return t;
     }
 
@@ -299,16 +300,5 @@ public class StormService {
         }
         tickets.removeAll(toBeRemoved);
         return tickets;
-        /*
-        for (WebElement elem : elements) {
-            if (elem.get.getText().contains(":")) {
-                LocalDateTime updated = LocalDateTime.parse(elem.getText());
-                if (updated.isAfter(cutoffDateTime)) {
-                    Ticket t = new Ticket();
-                    t.setStormKey();
-                }
-            }
-        }
-        */
     }
 }

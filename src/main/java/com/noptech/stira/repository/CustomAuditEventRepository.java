@@ -2,7 +2,6 @@ package com.noptech.stira.repository;
 
 import com.noptech.stira.config.audit.AuditEventConverter;
 import com.noptech.stira.domain.PersistentAuditEvent;
-
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.context.annotation.Bean;

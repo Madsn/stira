@@ -1,9 +1,8 @@
 package com.noptech.stira.config;
 
-import com.noptech.stira.config.liquibase.AsyncSpringLiquibase;
-
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.noptech.stira.config.liquibase.AsyncSpringLiquibase;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;

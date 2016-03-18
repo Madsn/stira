@@ -1,7 +1,6 @@
 package com.noptech.stira.security;
 
 import com.noptech.stira.domain.PersistentToken;
-import com.noptech.stira.domain.User;
 import com.noptech.stira.repository.PersistentTokenRepository;
 import com.noptech.stira.repository.UserRepository;
 import org.slf4j.Logger;
@@ -12,7 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.codec.Base64;
-import org.springframework.security.web.authentication.rememberme.*;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.CookieTheftException;
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

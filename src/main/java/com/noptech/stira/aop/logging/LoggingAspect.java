@@ -1,7 +1,6 @@
 package com.noptech.stira.aop.logging;
 
 import com.noptech.stira.config.Constants;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;

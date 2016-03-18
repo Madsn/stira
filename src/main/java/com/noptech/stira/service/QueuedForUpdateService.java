@@ -6,8 +6,8 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.repository.QueuedForUpdateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;

@@ -2,18 +2,17 @@ package com.noptech.stira.web.rest;
 
 import com.noptech.stira.Application;
 import com.noptech.stira.domain.QueueSource;
+import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.repository.QueueSourceRepository;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -28,10 +27,9 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.noptech.stira.domain.enumeration.TicketSource;
 
 /**
  * Test class for the QueueSourceResource REST controller.
@@ -44,7 +42,7 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 @IntegrationTest
 public class QueueSourceResourceIntTest {
 
-    
+
     private static final TicketSource DEFAULT_TICKET_SOURCE = TicketSource.STORM;
     private static final TicketSource UPDATED_TICKET_SOURCE = TicketSource.JIRA;
 

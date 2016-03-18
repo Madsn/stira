@@ -1,18 +1,25 @@
 package com.noptech.stira.repository;
 
 import com.noptech.stira.domain.QueueSource;
-
 import com.noptech.stira.domain.enumeration.TicketSource;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
 
 /**
  * Spring Data JPA repository for the QueueSource entity.
  */
-public interface QueueSourceRepository extends JpaRepository<QueueSource,Long> {
+public interface QueueSourceRepository {
 
-    @Query("SELECT qs FROM QueueSource qs WHERE qs.ticketSource = :sourceName")
-    QueueSource findByTicketSource(@Param("sourceName") TicketSource storm);
+    QueueSource findOneByTicketSource(TicketSource source);
+
+    QueueSource save(QueueSource source);
+
+    QueueSource findOne(Long id);
+
+    List<QueueSource> findAll();
+
+    void delete(Long id);
+
 }

@@ -1,7 +1,6 @@
 package com.noptech.stira.security;
 
 import com.noptech.stira.config.Constants;
-
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
