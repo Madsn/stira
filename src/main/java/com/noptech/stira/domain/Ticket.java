@@ -1,6 +1,7 @@
 package com.noptech.stira.domain;
 
 import com.noptech.stira.domain.enumeration.TicketStatus;
+import net.rcarz.jiraclient.Field;
 import net.rcarz.jiraclient.Issue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -61,12 +62,15 @@ public class Ticket implements Serializable {
         this.jiraLastUpdated = updated;
         this.jiraTitle = issue.getSummary();
         this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
-        String customerRef = issue.getField("customer issue reference").toString();
-        Pattern pattern = Pattern.compile("#\\d+");
-        Matcher matcher = pattern.matcher(customerRef);
-        String stormKey = matcher.group(0).replace("#", "");
-        if (stormKey != null) {
-            this.stormKey = Long.parseLong(stormKey);
+        Object issueRef = issue.getField("customfield_11502");
+        if (issueRef != null) {
+            String customerRef = Field.getString(issueRef);
+            Pattern pattern = Pattern.compile("#\\d+");
+            Matcher matcher = pattern.matcher(customerRef);
+            if (matcher.matches()) {
+                String stormKey = matcher.group(0).replace("#", "");
+                this.stormKey = Long.parseLong(stormKey);
+            }
         }
     }
 

@@ -90,7 +90,7 @@ public class StormService {
         return stormStatus;
     }
 
-    @Scheduled(fixedDelay = 10000000)
+    @Scheduled(fixedDelay = 10000)
     public void processFromQueue() {
         // TODO -  Update storm queue count (add column to entity)
 
@@ -109,7 +109,7 @@ public class StormService {
         }
     }
 
-    @Scheduled(fixedDelay = 12000000)
+    @Scheduled(fixedDelay = 120000)
     public void buildQueue() throws Exception {
         log.debug("Running storm buildQueue job");
         WebDriver driver = setupDriver();

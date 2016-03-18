@@ -5,7 +5,8 @@ public enum TicketStatus {
     WAITING_SSE("Systematic"),
     WAITING_SKAT("SKAT"),
     WAITING_TDCH("TDCH"),
-    UNKNOWN("Unknown");
+    UNKNOWN("Unknown"),
+    CLOSED("Closed");
 
     private final String status;
 
@@ -23,10 +24,12 @@ public enum TicketStatus {
 
     public static TicketStatus parseFromString(String text) {
         switch (text.trim()) {
+            // Storm
             case "Pending customer: [SPOC] - SKAT Dias/Systematic":
                 return TicketStatus.WAITING_SKAT;
             case "Pending external consultant":
                 return TicketStatus.WAITING_SSE;
+            // Jira
             case "Close Requested":
                 return TicketStatus.WAITING_SKAT;
             case "New":
@@ -39,6 +42,10 @@ public enum TicketStatus {
                 return TicketStatus.WAITING_SKAT;
             case "Waiting for Subcontractor":
                 return TicketStatus.WAITING_TDCH;
+            case "Resolved":
+                return TicketStatus.CLOSED;
+            case "Closed":
+                return TicketStatus.CLOSED;
             /*
             case "TODO":
                 return TicketStatus.WAITING_TDCH;
