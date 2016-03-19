@@ -27,15 +27,24 @@ public class QueuedForUpdateService {
     public void addToQueue(List<Ticket> tickets) {
         for (Ticket t : tickets) {
             QueuedForUpdate q = new QueuedForUpdate();
-            if (t.getStormKey() != null) {
+            if (t.getStormKey() != null && t.getJiraKey() != null) {
+                if (t.getStormLastUpdated() == null) {
+                    q.setTicketSource(TicketSource.STORM);
+                    q.setTicketKey(t.getStormKey());
+                    q.setAddedToQueue(t.getJiraLastUpdated());
+                } else if (t.getJiraLastUpdated() == null) {
+                    q.setTicketSource(TicketSource.JIRA);
+                    q.setTicketKey(t.getJiraKey());
+                    q.setAddedToQueue(t.getStormLastUpdated());
+                }
+            } else if (t.getStormKey() != null && t.getStormLastUpdated() == null) {
                 q.setTicketSource(TicketSource.STORM);
                 q.setAddedToQueue(t.getStormLastUpdated());
-                // TODO - refactor ticket entity to use common lastupdated and ticketKey fields
                 q.setTicketKey(String.valueOf(t.getStormKey()));
-            } else if (t.getJiraKey() != null) {
+            } else if (t.getStormKey() != null && t.getJiraLastUpdated() == null) {
                 q.setTicketSource(TicketSource.JIRA);
-                q.setAddedToQueue(t.getJiraLastUpdated());
-                q.setTicketKey(t.getJiraKey());
+                q.setAddedToQueue(t.getStormLastUpdated());
+                q.setTicketKey(t.getStormKey());
             }
             log.debug("Saving queuedForUpdate entity: " + q.toString());
             QueuedForUpdate oldQ = queuedForUpdateRepository.findByTicketKey(q.getTicketKey());
@@ -87,10 +96,15 @@ public class QueuedForUpdateService {
         queuedForUpdateRepository.delete(id);
     }
 
-    public QueuedForUpdate getNext(TicketSource ticketSource) {
+    public QueuedForUpdate getNext(TicketSource ticketSource) throws Exception {
         List<QueuedForUpdate> updates = queuedForUpdateRepository.getOldest(ticketSource);
         if (updates != null && updates.size() > 0) {
-            return updates.get(0);
+            QueuedForUpdate q = updates.get(0);
+            queuedForUpdateRepository.delete(updates.get(0));
+            if (q == null) {
+                throw new Exception("WHAT THE FUCK");
+            }
+            return q;
         }
         return null;
     }

@@ -20,4 +20,7 @@ public interface QueuedForUpdateRepository extends JpaRepository<QueuedForUpdate
 
     @Query("SELECT q FROM QueuedForUpdate q WHERE q.ticketSource = :ticketSource ORDER BY q.addedToQueue ASC")
     List<QueuedForUpdate> getOldest(@Param("ticketSource") TicketSource ticketSource);
+
+    @Query("SELECT q FROM QueuedForUpdate q WHERE q.ticketSource = 'STORM' and q.ticketKey = :stormKey")
+    QueuedForUpdate findOneByStormKey(@Param("stormKey") String stormKey);
 }

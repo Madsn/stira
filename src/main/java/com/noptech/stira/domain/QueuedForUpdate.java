@@ -33,6 +33,21 @@ public class QueuedForUpdate implements Serializable {
     @Column(name = "ticket_key")
     private String ticketKey;
 
+    public QueuedForUpdate(){}
+
+    public QueuedForUpdate(Ticket t, TicketSource source) throws Exception {
+        if (source.equals(TicketSource.JIRA)) {
+            this.ticketKey = t.getJiraKey();
+            this.addedToQueue = t.getJiraLastUpdated();
+        } else if (source.equals(TicketSource.STORM)) {
+            this.ticketKey = t.getStormKey();
+            this.addedToQueue = t.getStormLastUpdated();
+        } else {
+            throw new Exception("Unknown ticket source: " + source.toString());
+        }
+        this.ticketSource = source;
+    }
+
     public Long getId() {
         return id;
     }

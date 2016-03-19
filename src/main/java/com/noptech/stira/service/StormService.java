@@ -72,26 +72,8 @@ public class StormService {
         driver.findElement(By.cssSelector("a[title=Tickets]"));
     }
 
-
-    public StormStatusDTO getStatus(long ticketIdParam, WebDriver driver) {
-        StormStatusDTO stormStatus = new StormStatusDTO();
-        stormStatus.setId(ticketIdParam);
-
-        login(driver);
-
-        driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketIdParam);
-
-        WebElement priorityElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)"));
-        short priority = Short.parseShort(priorityElem.getText().substring(4));
-        stormStatus.setPriority(priority);
-
-        WebElement statusElem = driver.findElement(By.cssSelector("div.tick-info-table:nth-child(1) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2)"));
-        stormStatus.setStatus(statusElem.getText());
-        return stormStatus;
-    }
-
     @Scheduled(fixedDelay = 10000)
-    public void processFromQueue() {
+    public void processFromQueue() throws Exception {
         // TODO -  Update storm queue count (add column to entity)
 
         log.debug("Getting next task from queue");
@@ -105,7 +87,6 @@ public class StormService {
             } finally {
                 driver.quit();
             }
-            queuedForUpdateService.delete(next.getId());
         }
     }
 
@@ -174,8 +155,6 @@ public class StormService {
 
     private void processTicket(QueuedForUpdate next, WebDriver driver) {
         Ticket t = getStormTicketInfo(next.getTicketKey(), driver);
-
-
         ticketService.mergeFromStorm(t);
     }
 
@@ -184,7 +163,7 @@ public class StormService {
         login(driver);
         driver.navigate().to("https://customer.tdchosting.com/tickets/tickets-details/?id=" + ticketKey);
         Ticket t = new Ticket();
-        t.setStormKey(Long.valueOf(ticketKey));
+        t.setStormKey(ticketKey);
 
         /*
         WebElement titleElem = driver.findElement(By.cssSelector(".ticket-details-info > p:nth-child(11)"));
@@ -221,7 +200,7 @@ public class StormService {
             for (WebElement col : columns) {
                 switch(col.getAttribute("class")) {
                     case "col1": // TicketKey
-                        ticket.setStormKey(Long.valueOf(col.getText()));
+                        ticket.setStormKey(col.getText());
                         break;
                     case "type-td": // priority
                         break;

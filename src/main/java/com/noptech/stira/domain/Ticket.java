@@ -28,7 +28,7 @@ public class Ticket implements Serializable {
     private Long id;
 
     @Column(name = "storm_key")
-    private Long stormKey;
+    private String stormKey;
 
     @Column(name = "jira_key")
     private String jiraKey;
@@ -56,6 +56,9 @@ public class Ticket implements Serializable {
     @Enumerated(EnumType.STRING)
     private TicketStatus stormStatus;
 
+    @Column(name = "flagged")
+    private boolean flagged;
+
     public Ticket(Issue issue) {
         this.jiraKey = issue.getKey();
         LocalDateTime updated = LocalDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
@@ -64,12 +67,11 @@ public class Ticket implements Serializable {
         this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
         Object issueRef = issue.getField("customfield_11502");
         if (issueRef != null) {
-            String customerRef = Field.getString(issueRef);
-            Pattern pattern = Pattern.compile("#\\d+");
-            Matcher matcher = pattern.matcher(customerRef);
-            if (matcher.matches()) {
-                String stormKey = matcher.group(0).replace("#", "");
-                this.stormKey = Long.parseLong(stormKey);
+            String issueRefString = Field.getString(issueRef);
+            Pattern pattern = Pattern.compile("#(\\d+)");
+            Matcher matcher = pattern.matcher(issueRefString);
+            if (matcher.find()) {
+                this.stormKey = matcher.group(0).replace("#", "");
             }
         }
     }
@@ -86,11 +88,11 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Long getStormKey() {
+    public String getStormKey() {
         return stormKey;
     }
 
-    public void setStormKey(Long stormKey) {
+    public void setStormKey(String stormKey) {
         this.stormKey = stormKey;
     }
 
@@ -175,6 +177,7 @@ public class Ticket implements Serializable {
             ", mutedUntil ='" + mutedUntil + "'" +
             ", jiraStatus ='" + jiraStatus + "'" +
             ", stormStatus ='" + stormStatus + "'" +
+            ", flagged ='" + flagged + "'" +
             '}';
     }
 
@@ -192,5 +195,38 @@ public class Ticket implements Serializable {
 
     public void setJiraStatus(TicketStatus jiraStatus) {
         this.jiraStatus = jiraStatus;
+    }
+
+    public void mergeValuesFrom(Ticket newValues) {
+        if (newValues.getJiraKey() != null)
+            this.setJiraKey(newValues.getJiraKey());
+        if (newValues.getJiraLastUpdated() != null)
+            this.setJiraLastUpdated(newValues.getJiraLastUpdated());
+        if (newValues.getJiraStatus() != null)
+            this.setJiraStatus(newValues.getJiraStatus());
+        if (newValues.getJiraTitle() != null)
+            this.setJiraTitle(newValues.getJiraTitle());
+        if (newValues.getMutedUntil() != null)
+            this.setMutedUntil(newValues.getMutedUntil());
+        if (newValues.getStormKey() != null)
+            this.setStormKey(newValues.getStormKey());
+        if (newValues.getStormLastUpdated() != null)
+            this.setStormLastUpdated(newValues.getStormLastUpdated());
+        if (newValues.getStormLastUpdated() != null)
+            this.setStormLastUpdated(newValues.getStormLastUpdated());
+        if (newValues.getStormStatus() != null)
+            this.setStormStatus(newValues.getStormStatus());
+        if (newValues.getStormTitle() != null)
+            this.setStormTitle(newValues.getStormTitle());
+        if (newValues.isFlagged())
+            this.flagged = newValues.isFlagged();
+    }
+
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
+    }
+
+    public boolean isFlagged() {
+        return flagged;
     }
 }

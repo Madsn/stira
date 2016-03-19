@@ -29,6 +29,8 @@ public enum TicketStatus {
                 return TicketStatus.WAITING_SKAT;
             case "Pending external consultant":
                 return TicketStatus.WAITING_SSE;
+            case "Pending Service Delivery Manager":
+                return TicketStatus.WAITING_TDCH;
             // Jira
             case "Close Requested":
                 return TicketStatus.WAITING_SKAT;
@@ -44,6 +46,7 @@ public enum TicketStatus {
                 return TicketStatus.WAITING_TDCH;
             case "Resolved":
                 return TicketStatus.CLOSED;
+            // Both
             case "Closed":
                 return TicketStatus.CLOSED;
             /*

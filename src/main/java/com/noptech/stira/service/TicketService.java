@@ -31,15 +31,11 @@ public class TicketService {
             if (ticket.getStormKey() != null) {
                 existingTicket = ticketRepository.findOneByStormKey(ticket.getStormKey());
             }
-            if (existingTicket == null) {
-                existingTicket = ticket;
-            }
         }
-        existingTicket.setJiraLastUpdated(ticket.getJiraLastUpdated());
-        existingTicket.setJiraStatus(ticket.getJiraStatus());
-        existingTicket.setJiraTitle(ticket.getJiraTitle());
-        if (ticket.getStormKey() != null) {
-            existingTicket.setStormKey(ticket.getStormKey());
+        if (existingTicket == null) {
+            existingTicket = ticket;
+        } else {
+            existingTicket.mergeValuesFrom(ticket);
         }
         ticketRepository.save(existingTicket);
     }
@@ -53,13 +49,27 @@ public class TicketService {
     public void mergeFromStorm(Ticket ticket) {
         Ticket existingTicket = ticketRepository.findOneByStormKey(ticket.getStormKey());
         if (existingTicket == null) {
+            if (ticket.getJiraKey() != null) {
+                existingTicket = ticketRepository.findOneByJiraKey(ticket.getStormKey());
+            }
+        }
+        if (existingTicket == null) {
             existingTicket = ticket;
         } else {
-            existingTicket.setStormLastUpdated(ticket.getJiraLastUpdated());
-            existingTicket.setJiraStatus(ticket.getJiraStatus());
-            existingTicket.setJiraTitle(ticket.getJiraTitle());
+            existingTicket.mergeValuesFrom(ticket);
         }
         ticketRepository.save(existingTicket);
     }
 
+    public List<Ticket> findWithMissingFields() {
+        return ticketRepository.findWithMissingFields();
+    }
+
+    public void flagTicketByStormKey(String ticketKey) {
+        Ticket t = ticketRepository.findOneByStormKey(ticketKey);
+        if (t != null) {
+            t.setFlagged(true);
+            ticketRepository.save(t);
+        }
+    }
 }
