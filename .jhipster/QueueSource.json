@@ -10,7 +10,7 @@
         {
             "fieldId": 2,
             "fieldName": "lastAddedTicket",
-            "fieldType": "LocalDate"
+            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20160316171504",

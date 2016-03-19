@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,17 +65,17 @@ public class JiraService {
         return new JiraClient(jiraUrl, creds);
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 100000000)
     public void runJiraJob() throws Exception {
         JiraClient jiraClient = getJiraClient();
         log.debug("Building jira Queue");
         // First check jira for updated issues, add to queue
-        LocalDateTime maxDate = LocalDateTime.MIN;
-        LocalDateTime lastChecked = getQueueSource().getLastAddedTicket() == null ? LocalDateTime.now().minusDays(30) : jiraSource.getLastAddedTicket();
+        ZonedDateTime maxDate = ZonedDateTime.now().minusYears(100);
+        ZonedDateTime lastChecked = getQueueSource().getLastAddedTicket() == null ? ZonedDateTime.now().minusDays(30) : jiraSource.getLastAddedTicket();
         Issue.SearchResult sr = jiraClient.searchIssues("updated >= '" + lastChecked.format(searchFormatter) + "' and issuetype in ('Service request', Incident) and project = 'SKAT DIAS'");
         List<Ticket> tickets = new ArrayList<>();
         for (Issue issue : sr.issues) {
-            LocalDateTime updated = LocalDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
+            ZonedDateTime updated = ZonedDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
             if (updated.isAfter(maxDate)) {
                 maxDate = updated;
             }
@@ -90,13 +91,13 @@ public class JiraService {
         // Update Queue count TODO
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000000)
     public void syncJob() throws Exception {
         List<Ticket> tickets = ticketService.findWithMissingFields();
         queuedForUpdateService.addToQueue(tickets);
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 100000000)
     public void processFromQueue() throws Exception {
         JiraClient jiraClient = getJiraClient();
         // Processing task that was found in storm based on last updated, but not from Jira

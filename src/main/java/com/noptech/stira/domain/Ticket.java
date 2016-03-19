@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -40,10 +41,10 @@ public class Ticket implements Serializable {
     private String stormTitle;
 
     @Column(name = "jira_last_updated")
-    private LocalDateTime jiraLastUpdated;
+    private ZonedDateTime jiraLastUpdated;
 
     @Column(name = "storm_last_updated")
-    private LocalDateTime stormLastUpdated;
+    private ZonedDateTime stormLastUpdated;
 
     @Column(name = "muted_until")
     private LocalDate mutedUntil;
@@ -61,7 +62,7 @@ public class Ticket implements Serializable {
 
     public Ticket(Issue issue) {
         this.jiraKey = issue.getKey();
-        LocalDateTime updated = LocalDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
+        ZonedDateTime updated = ZonedDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
         this.jiraLastUpdated = updated;
         this.jiraTitle = issue.getSummary();
         this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
@@ -120,19 +121,19 @@ public class Ticket implements Serializable {
         this.stormTitle = stormTitle;
     }
 
-    public LocalDateTime getJiraLastUpdated() {
+    public ZonedDateTime getJiraLastUpdated() {
         return jiraLastUpdated;
     }
 
-    public void setJiraLastUpdated(LocalDateTime jiraLastUpdated) {
+    public void setJiraLastUpdated(ZonedDateTime jiraLastUpdated) {
         this.jiraLastUpdated = jiraLastUpdated;
     }
 
-    public LocalDateTime getStormLastUpdated() {
+    public ZonedDateTime getStormLastUpdated() {
         return stormLastUpdated;
     }
 
-    public void setStormLastUpdated(LocalDateTime stormLastUpdated) {
+    public void setStormLastUpdated(ZonedDateTime stormLastUpdated) {
         this.stormLastUpdated = stormLastUpdated;
     }
 

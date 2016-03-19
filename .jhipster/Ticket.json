@@ -25,12 +25,12 @@
         {
             "fieldId": 5,
             "fieldName": "jiraLastUpdated",
-            "fieldType": "LocalDate"
+            "fieldType": "ZonedDateTime"
         },
         {
             "fieldId": 6,
             "fieldName": "stormLastUpdated",
-            "fieldType": "LocalDate"
+            "fieldType": "ZonedDateTime"
         },
         {
             "fieldId": 7,

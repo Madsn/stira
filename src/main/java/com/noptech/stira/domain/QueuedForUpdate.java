@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import com.noptech.stira.domain.enumeration.TicketSource;
@@ -28,7 +29,7 @@ public class QueuedForUpdate implements Serializable {
     private TicketSource ticketSource;
 
     @Column(name = "added_to_queue")
-    private LocalDateTime addedToQueue;
+    private ZonedDateTime addedToQueue;
 
     @Column(name = "ticket_key")
     private String ticketKey;
@@ -64,11 +65,11 @@ public class QueuedForUpdate implements Serializable {
         this.ticketSource = ticketSource;
     }
 
-    public LocalDateTime getAddedToQueue() {
+    public ZonedDateTime getAddedToQueue() {
         return addedToQueue;
     }
 
-    public void setAddedToQueue(LocalDateTime addedToQueue) {
+    public void setAddedToQueue(ZonedDateTime addedToQueue) {
         this.addedToQueue = addedToQueue;
     }
 

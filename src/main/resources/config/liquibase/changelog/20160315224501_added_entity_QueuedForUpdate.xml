@@ -23,7 +23,7 @@
             </column>
             <column name="ticket_source" type="varchar(255)"/>
 
-            <column name="added_to_queue" type="datetime"/>
+            <column name="added_to_queue" type="timestamp"/>
 
             <column name="ticket_key" type="varchar(255)"/>
 

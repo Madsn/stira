@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class QueueSource implements Serializable {
     private TicketSource ticketSource;
 
     @Column(name = "last_added_ticket")
-    private LocalDateTime lastAddedTicket;
+    private ZonedDateTime lastAddedTicket;
 
     public Long getId() {
         return id;
@@ -51,11 +52,11 @@ public class QueueSource implements Serializable {
         this.ticketSource = ticketSource;
     }
 
-    public LocalDateTime getLastAddedTicket() {
+    public ZonedDateTime getLastAddedTicket() {
         return lastAddedTicket;
     }
 
-    public void setLastAddedTicket(LocalDateTime lastAddedTicket) {
+    public void setLastAddedTicket(ZonedDateTime lastAddedTicket) {
         this.lastAddedTicket = lastAddedTicket;
     }
 
@@ -68,10 +69,7 @@ public class QueueSource implements Serializable {
             return false;
         }
         QueueSource queueSource = (QueueSource) o;
-        if(queueSource.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, queueSource.id);
+        return !(queueSource.id == null || id == null) && Objects.equals(id, queueSource.id);
     }
 
     @Override

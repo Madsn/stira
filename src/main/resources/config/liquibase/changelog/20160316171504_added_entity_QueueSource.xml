@@ -23,7 +23,7 @@
             </column>
             <column name="ticket_source" type="varchar(255)"/>
 
-            <column name="last_added_ticket" type="datetime"/>
+            <column name="last_added_ticket" type="timestamp"/>
 
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>

@@ -75,7 +75,7 @@ public class QueueSourceResource {
     public List<QueueSource> getAllQueueSources() {
         log.debug("REST request to get all QueueSources");
         return queueSourceRepository.findAll();
-            }
+    }
 
     /**
      * GET  /queueSources/:id -> get the "id" queueSource.

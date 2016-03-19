@@ -6,7 +6,6 @@ import com.noptech.stira.domain.Ticket;
 import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.domain.enumeration.TicketStatus;
 import com.noptech.stira.repository.QueueSourceRepository;
-import com.noptech.stira.web.rest.dto.StormStatusDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +72,7 @@ public class StormService {
         driver.findElement(By.cssSelector("a[title=Tickets]"));
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000000)
     public void processFromQueue() throws Exception {
         // TODO -  Update storm queue count (add column to entity)
 
@@ -90,7 +90,7 @@ public class StormService {
         }
     }
 
-    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 120000000)
     public void buildQueue() throws Exception {
         log.debug("Running storm buildQueue job");
         WebDriver driver = setupDriver();
@@ -106,7 +106,7 @@ public class StormService {
             List<Ticket> updatedTickets = getUpdatedTickets(driver);
             if (!(updatedTickets == null || updatedTickets.isEmpty())) {
                 log.debug("Finding maxdate");
-                LocalDateTime maxDate = getMaxDate(updatedTickets, driver);
+                ZonedDateTime maxDate = getMaxDate(updatedTickets, driver);
 
                 log.debug("Adding updated tickets to queue");
                 queuedForUpdateService.addToQueue(updatedTickets);
@@ -123,16 +123,16 @@ public class StormService {
 
     /**
      * @param updatedTickets
-     * @return Max LocalDateTime, including seconds, for the ticket most recently updated
+     * @return Max ZonedDateTime, including seconds, for the ticket most recently updated
      */
-    private LocalDateTime getMaxDate(List<Ticket> updatedTickets, WebDriver driver) {
+    private ZonedDateTime getMaxDate(List<Ticket> updatedTickets, WebDriver driver) {
         updatedTickets.sort(new Comparator<Ticket>() {
             @Override
             public int compare(Ticket o1, Ticket o2) {
                 return o2.getStormLastUpdated().compareTo(o1.getStormLastUpdated());
             }
         });
-        LocalDateTime maxDate = getUpdatedTimeStamp(updatedTickets.get(0), driver);
+        ZonedDateTime maxDate = getUpdatedTimeStamp(updatedTickets.get(0), driver);
         if (updatedTickets.size() == 1) {
             return maxDate;
         }
@@ -140,7 +140,7 @@ public class StormService {
             if (updatedTickets.get(x).getStormLastUpdated().isBefore(updatedTickets.get(0).getStormLastUpdated())) {
                 return maxDate;
             }
-            LocalDateTime tempDate = getUpdatedTimeStamp(updatedTickets.get(x), driver);
+            ZonedDateTime tempDate = getUpdatedTimeStamp(updatedTickets.get(x), driver);
             if (tempDate.isAfter(maxDate)) {
                 maxDate = tempDate;
             }
@@ -148,7 +148,7 @@ public class StormService {
         return maxDate;
     }
 
-    private LocalDateTime getUpdatedTimeStamp(Ticket ticket, WebDriver driver) {
+    private ZonedDateTime getUpdatedTimeStamp(Ticket ticket, WebDriver driver) {
         Ticket detailedTicket = getStormTicketInfo(ticket.getStormKey().toString(), driver);
         return detailedTicket.getStormLastUpdated();
     }
@@ -173,7 +173,7 @@ public class StormService {
         WebElement infoContainer = driver.findElements(By.className("ticket-details-info")).get(0);
         WebElement lastUpdatedElem = infoContainer.findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        t.setStormLastUpdated(LocalDateTime.parse(lastUpdatedElem.getText(), formatter));
+        t.setStormLastUpdated(ZonedDateTime.parse(lastUpdatedElem.getText(), formatter));
 
         WebElement statusElem = infoContainer.findElements(By.tagName("tr")).get(4).findElement(By.tagName("td"));
         t.setStormStatus(TicketStatus.parseFromString(statusElem.getText()));
@@ -185,8 +185,8 @@ public class StormService {
             throw new Exception("No storm source found in database");
         }
 
-        LocalDateTime cutoffDateTime = stormSource.getLastAddedTicket() == null
-            ? LocalDateTime.now().minusDays(30) : stormSource.getLastAddedTicket();
+        ZonedDateTime cutoffDateTime = stormSource.getLastAddedTicket() == null
+            ? ZonedDateTime.now().minusDays(30) : stormSource.getLastAddedTicket();
 
         return getTicketsUpdatedAfter(cutoffDateTime, driver);
     }
@@ -206,13 +206,13 @@ public class StormService {
                         break;
                     case "updated-td": // last updated
                         String timestamp = col.getText();
-                        LocalDateTime dateTime = null;
+                        ZonedDateTime dateTime = null;
                         if (timestamp.contains(":")) {
                             if (timestamp.length() == 5) {
-                                dateTime = LocalDateTime.parse(LocalDate.now().toString() + "T" + timestamp + ":00");
+                                dateTime = ZonedDateTime.parse(LocalDateTime.now().toString() + "T" + timestamp + ":00");
                             } else {
                                 LocalDate date = getDateFromDayOfWeek(timestamp);
-                                dateTime = LocalDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00");
+                                dateTime = ZonedDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00");
                             }
                         }
                         log.debug("No timestamp found: " + col.getText());
@@ -268,7 +268,7 @@ public class StormService {
         }
     }
 
-    private List<Ticket> getTicketsUpdatedAfter(LocalDateTime cutoffDateTime, WebDriver driver) throws Exception {
+    private List<Ticket> getTicketsUpdatedAfter(ZonedDateTime cutoffDateTime, WebDriver driver) throws Exception {
         List<Ticket> tickets = getAllTicketsOnDashboard(driver);
 
         List<Ticket> toBeRemoved = new ArrayList<>();
