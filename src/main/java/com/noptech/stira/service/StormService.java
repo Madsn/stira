@@ -7,9 +7,14 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.domain.enumeration.TicketStatus;
 import com.noptech.stira.repository.QueueSourceRepository;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 @Service
 @Transactional
@@ -49,6 +55,15 @@ public class StormService {
     QueueSource stormSource;
 
     private WebDriver setupDriver() {
+        LoggingPreferences logPref = new LoggingPreferences();
+        logPref.enable(LogType.BROWSER, Level.OFF);
+        logPref.enable(LogType.SERVER, Level.OFF);
+        logPref.enable(LogType.DRIVER, Level.OFF);
+        logPref.enable(LogType.PROFILER, Level.OFF);
+        logPref.enable(LogType.CLIENT, Level.OFF);
+        logPref.enable(LogType.PERFORMANCE, Level.OFF);
+        DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, logPref);
         WebDriver driver = new HtmlUnitDriver();
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         return driver;
@@ -218,7 +233,7 @@ public class StormService {
                                 dateTime = ZonedDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00+01:00");
                             }
                         }
-                        log.debug("No timestamp found: " + col.getText());
+                        //log.debug("No timestamp found: " + col.getText());
                         ticket.setStormLastUpdated(dateTime);
                         break;
                     case "problem-area": // title
