@@ -44,6 +44,22 @@
             </tr>
             <tr>
                 <td>
+                    <span>JiraStatus</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{ticket.jiraStatus}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>StormStatus</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{ticket.stormStatus}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <span>JiraLastUpdated</span>
                 </td>
                 <td>
@@ -64,6 +80,14 @@
                 </td>
                 <td>
                     <span class="form-control-static">{{ticket.mutedUntil | date:'mediumDate'}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Flagged</span>
+                </td>
+                <td>
+                    <span class="form-control-static">{{ticket.flagged}}</span>
                 </td>
             </tr>
             </tbody>
