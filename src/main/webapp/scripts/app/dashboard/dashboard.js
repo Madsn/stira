@@ -3,20 +3,21 @@
 angular.module('stiraApp')
     .config(function ($stateProvider) {
         $stateProvider
-            .state('home', {
+            .state('dashboard', {
                 parent: 'site',
                 url: '/',
                 data: {
-                    authorities: []
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Stira dashboard'
                 },
                 views: {
                     'content@': {
-                        templateUrl: 'scripts/app/main/main.html',
-                        controller: 'MainController'
+                        templateUrl: 'scripts/app/dashboard/dashboard.html',
+                        controller: 'DashboardController'
                     }
                 },
                 resolve: {
-                    
+
                 }
             });
     });

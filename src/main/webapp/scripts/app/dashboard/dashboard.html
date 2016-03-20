@@ -1,0 +1,65 @@
+<div>
+    <h2>Dashboard</h2>
+    <jh-alert></jh-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <!-- TODO: Add filtering buttons -->
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th><span>StormKey</span></th>
+                    <th><span>JiraKey</span></th>
+                    <th><span>JiraTitle</span></th>
+                    <th><span>JiraStatus</span></th>
+                    <th><span>StormStatus</span></th>
+                    <th><span>JiraLastUpdated</span></th>
+                    <th><span>StormLastUpdated</span></th>
+                    <th><span>MutedUntil</span></th>
+                    <th><span>Flagged</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ticket in tickets track by ticket.id" ng-class="getRowAlertClasses(ticket)">
+                    <td><a href="https://customer.tdchosting.com/tickets/tickets-details/?id={{ticket.stormKey}}">{{ticket.stormKey}}</a></td>
+                    <td><a href="http://support.systematic.com/browse/{{ticket.jiraKey}}">{{ticket.jiraKey}}</a></td>
+                    <td>{{ticket.jiraTitle}}</td>
+                    <td>{{ticket.jiraStatus}}</td>
+                    <td>{{ticket.stormStatus}}</td>
+                    <td>{{ticket.jiraLastUpdated | date:'mediumDate'}}</td>
+                    <td>{{ticket.stormLastUpdated | date:'mediumDate'}}</td>
+                    <td>{{ticket.mutedUntil | date:'mediumDate'}}</td>
+                    <td>{{ticket.flagged}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="ticket.detail({id:ticket.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="ticket.edit({id:ticket.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="ticket.delete({id:ticket.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

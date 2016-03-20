@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stiraApp')
-    .controller('TicketController', function ($scope, $state, Ticket) {
+    .controller('DashboardController', function ($scope, $state, Ticket) {
 
         $scope.tickets = [];
         $scope.loadAll = function() {
@@ -30,5 +30,17 @@ angular.module('stiraApp')
                 mutedUntil: null,
                 id: null
             };
+        };
+
+        $scope.getRowAlertClasses = function(ticket) {
+            if (ticket.jiraStatus === ticket.stormStatus) {
+                return '';
+            } else if (ticket.stormStatus === 'WAITING_SSE') {
+                return 'alert alert-danger';
+            } else if (ticket.stormStatus === 'WAITING_SKAT') {
+                return 'alert alert-info';
+            } else {
+                return 'alert alert-warning';
+            }
         };
     });
