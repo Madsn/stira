@@ -88,7 +88,7 @@ public class StormService {
         driver.findElement(By.cssSelector("a[title=Tickets]"));
     }
 
-    @Scheduled(fixedDelay = 10000000)
+    @Scheduled(fixedDelay = 30000)
     public void processFromQueue() throws Exception {
         // TODO -  Update storm queue count (add column to entity)
 

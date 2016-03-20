@@ -91,13 +91,13 @@ public class JiraService {
         // Update Queue count TODO
     }
 
-    @Scheduled(fixedDelay = 10000000)
+    @Scheduled(fixedDelay = 400000)
     public void syncJob() throws Exception {
         List<Ticket> tickets = ticketService.findWithMissingFields();
         queuedForUpdateService.addToQueue(tickets);
     }
 
-    @Scheduled(fixedDelay = 100000000)
+    @Scheduled(fixedDelay = 30000)
     public void processFromQueue() throws Exception {
         JiraClient jiraClient = getJiraClient();
         // Processing task that was found in storm based on last updated, but not from Jira

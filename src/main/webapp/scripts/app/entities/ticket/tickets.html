@@ -26,6 +26,7 @@
                     <th><span>JiraLastUpdated</span></th>
                     <th><span>StormLastUpdated</span></th>
                     <th><span>MutedUntil</span></th>
+                    <th><span>Flagged</span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -39,6 +40,7 @@
                     <td>{{ticket.jiraLastUpdated | date:'mediumDate'}}</td>
                     <td>{{ticket.stormLastUpdated | date:'mediumDate'}}</td>
                     <td>{{ticket.mutedUntil | date:'mediumDate'}}</td>
+                    <td>{{ticket.flagged}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
