@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -173,7 +174,9 @@ public class StormService {
         WebElement infoContainer = driver.findElements(By.className("ticket-details-info")).get(0);
         WebElement lastUpdatedElem = infoContainer.findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        t.setStormLastUpdated(ZonedDateTime.parse(lastUpdatedElem.getText(), formatter));
+        ZoneId zoneId = ZoneId.of("Europe/Paris");
+        LocalDateTime dateTime = LocalDateTime.parse(lastUpdatedElem.getText(), formatter);
+        t.setStormLastUpdated(ZonedDateTime.of(dateTime, zoneId));
 
         WebElement statusElem = infoContainer.findElements(By.tagName("tr")).get(4).findElement(By.tagName("td"));
         t.setStormStatus(TicketStatus.parseFromString(statusElem.getText()));
@@ -209,10 +212,10 @@ public class StormService {
                         ZonedDateTime dateTime = null;
                         if (timestamp.contains(":")) {
                             if (timestamp.length() == 5) {
-                                dateTime = ZonedDateTime.parse(LocalDateTime.now().toString() + "T" + timestamp + ":00");
+                                dateTime = ZonedDateTime.parse(timestamp);
                             } else {
                                 LocalDate date = getDateFromDayOfWeek(timestamp);
-                                dateTime = ZonedDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00");
+                                dateTime = ZonedDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00+01:00");
                             }
                         }
                         log.debug("No timestamp found: " + col.getText());
