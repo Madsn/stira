@@ -3,7 +3,6 @@ package com.noptech.stira.repository;
 import com.noptech.stira.domain.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

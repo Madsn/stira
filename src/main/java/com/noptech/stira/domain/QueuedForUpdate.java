@@ -1,16 +1,13 @@
 package com.noptech.stira.domain;
 
+import com.noptech.stira.domain.enumeration.TicketSource;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import java.time.LocalDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-
-import com.noptech.stira.domain.enumeration.TicketSource;
 
 /**
  * A QueuedForUpdate.

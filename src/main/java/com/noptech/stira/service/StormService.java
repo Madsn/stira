@@ -7,7 +7,6 @@ import com.noptech.stira.domain.enumeration.TicketSource;
 import com.noptech.stira.domain.enumeration.TicketStatus;
 import com.noptech.stira.repository.QueueSourceRepository;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -106,7 +105,7 @@ public class StormService {
         }
     }
 
-    @Scheduled(fixedDelay = 120000000)
+    @Scheduled(fixedDelay = 600000)
     public void buildQueue() throws Exception {
         log.debug("Running storm buildQueue job");
         WebDriver driver = setupDriver();

@@ -8,7 +8,6 @@ import com.noptech.stira.repository.QueueSourceRepository;
 import net.rcarz.jiraclient.BasicCredentials;
 import net.rcarz.jiraclient.Issue;
 import net.rcarz.jiraclient.JiraClient;
-import net.rcarz.jiraclient.JiraException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 @Service
 @Transactional
@@ -65,7 +62,7 @@ public class JiraService {
         return new JiraClient(jiraUrl, creds);
     }
 
-    @Scheduled(fixedDelay = 100000000)
+    @Scheduled(fixedDelay = 600000)
     public void runJiraJob() throws Exception {
         JiraClient jiraClient = getJiraClient();
         log.debug("Building jira Queue");
