@@ -1,7 +1,7 @@
 apply plugin: 'spring-boot'
 
 ext {
-    logbackLoglevel = "DEBUG"
+    logbackLoglevel = "ERROR"
 }
 
 dependencies {

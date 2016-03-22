@@ -23,4 +23,7 @@ public interface QueuedForUpdateRepository extends JpaRepository<QueuedForUpdate
 
     @Query("SELECT q FROM QueuedForUpdate q WHERE q.ticketSource = 'STORM' and q.ticketKey = :stormKey")
     QueuedForUpdate findOneByStormKey(@Param("stormKey") String stormKey);
+
+    @Query("SELECT q FROM QueuedForUpdate q WHERE q.ticketKey = :ticketKey and q.ticketSource = :ticketSource")
+    QueuedForUpdate findByTicketKeyAndSource(@Param("ticketKey") String ticketKey, @Param("ticketSource") TicketSource ticketSource);
 }

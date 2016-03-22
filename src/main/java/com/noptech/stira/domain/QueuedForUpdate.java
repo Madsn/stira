@@ -22,13 +22,13 @@ public class QueuedForUpdate implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_source")
+    @Column(name = "ticket_source", nullable = false)
     private TicketSource ticketSource;
 
-    @Column(name = "added_to_queue")
+    @Column(name = "added_to_queue", nullable = false)
     private ZonedDateTime addedToQueue;
 
-    @Column(name = "ticket_key")
+    @Column(name = "ticket_key", nullable = false)
     private String ticketKey;
 
     public QueuedForUpdate(){}

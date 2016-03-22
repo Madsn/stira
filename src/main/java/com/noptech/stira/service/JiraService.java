@@ -62,7 +62,7 @@ public class JiraService {
         return new JiraClient(jiraUrl, creds);
     }
 
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelay = 100000)
     public void runJiraJob() throws Exception {
         JiraClient jiraClient = getJiraClient();
         log.debug("Building jira Queue");

@@ -67,8 +67,8 @@ public class Ticket implements Serializable {
         this.jiraTitle = issue.getSummary();
         this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
         Object issueRef = issue.getField("customfield_11502");
-        if (issueRef != null) {
-            String issueRefString = Field.getString(issueRef);
+        String issueRefString = issueRef != null ? Field.getString(issueRef) : null;
+        if (issueRefString != null) {
             Pattern pattern = Pattern.compile("#(\\d+)");
             Matcher matcher = pattern.matcher(issueRefString);
             if (matcher.find()) {

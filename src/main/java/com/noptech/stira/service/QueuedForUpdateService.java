@@ -36,6 +36,10 @@ public class QueuedForUpdateService {
                     q.setTicketSource(TicketSource.JIRA);
                     q.setTicketKey(t.getJiraKey());
                     q.setAddedToQueue(t.getStormLastUpdated());
+                } else {
+                    q.setTicketSource(TicketSource.STORM);
+                    q.setTicketKey(t.getStormKey());
+                    q.setAddedToQueue(t.getStormLastUpdated());
                 }
             } else if (t.getStormKey() != null && t.getStormLastUpdated() == null) {
                 q.setTicketSource(TicketSource.STORM);
@@ -45,9 +49,13 @@ public class QueuedForUpdateService {
                 q.setTicketSource(TicketSource.JIRA);
                 q.setAddedToQueue(t.getStormLastUpdated());
                 q.setTicketKey(t.getStormKey());
+            } else if (t.getStormKey() != null) {
+                q.setTicketSource(TicketSource.STORM);
+                q.setTicketKey(t.getStormKey());
+                q.setAddedToQueue(t.getStormLastUpdated());
             }
             log.debug("Saving queuedForUpdate entity: " + q.toString());
-            QueuedForUpdate oldQ = queuedForUpdateRepository.findByTicketKey(q.getTicketKey());
+            QueuedForUpdate oldQ = queuedForUpdateRepository.findByTicketKeyAndSource(q.getTicketKey(), q.getTicketSource());
             if (oldQ == null) {
                 queuedForUpdateRepository.save(q);
             } else {

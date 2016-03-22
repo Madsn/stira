@@ -1,15 +1,24 @@
 'use strict';
 
 angular.module('stiraApp')
-    .controller('DashboardController', function ($scope, $state, Ticket) {
+    .controller('DashboardController', function ($scope, $state, DashboardErr, DashboardWarn) {
 
+        $scope.warn = true;
         $scope.tickets = [];
-        $scope.loadAll = function() {
-            Ticket.query(function(result) {
+        $scope.loadWarn = function() {
+            $scope.warn = true;
+            DashboardWarn.query(function(result) {
                $scope.tickets = result;
             });
         };
-        $scope.loadAll();
+        $scope.loadWarn();
+
+        $scope.loadErr = function() {
+            $scope.warn = false;
+            DashboardErr.query(function(result) {
+               $scope.tickets = result;
+            });
+        };
 
 
         $scope.refresh = function () {
@@ -35,6 +44,8 @@ angular.module('stiraApp')
         $scope.getRowAlertClasses = function(ticket) {
             if (ticket.jiraStatus === ticket.stormStatus) {
                 return '';
+            } else if (ticket.jiraStatus === null && ticket.stormStatus !== null) {
+                return 'alert alert-danger';
             } else if (ticket.stormStatus === 'WAITING_SSE') {
                 return 'alert alert-danger';
             } else if (ticket.stormStatus === 'WAITING_SKAT') {

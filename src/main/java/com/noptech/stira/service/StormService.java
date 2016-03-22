@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +48,8 @@ public class StormService {
     @Inject
     private TicketService ticketService;
 
-    QueueSource stormSource;
+    private QueueSource stormSource;
+    private ZoneId zoneId = ZoneId.of("Europe/Paris");
 
     private WebDriver setupDriver() {
         LoggingPreferences logPref = new LoggingPreferences();
@@ -105,7 +103,7 @@ public class StormService {
         }
     }
 
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelay = 100000)
     public void buildQueue() throws Exception {
         log.debug("Running storm buildQueue job");
         WebDriver driver = setupDriver();
@@ -188,7 +186,6 @@ public class StormService {
         WebElement infoContainer = driver.findElements(By.className("ticket-details-info")).get(0);
         WebElement lastUpdatedElem = infoContainer.findElements(By.tagName("tr")).get(3).findElement(By.tagName("td"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        ZoneId zoneId = ZoneId.of("Europe/Paris");
         LocalDateTime dateTime = LocalDateTime.parse(lastUpdatedElem.getText(), formatter);
         t.setStormLastUpdated(ZonedDateTime.of(dateTime, zoneId));
 
@@ -226,7 +223,7 @@ public class StormService {
                         ZonedDateTime dateTime = null;
                         if (timestamp.contains(":")) {
                             if (timestamp.length() == 5) {
-                                dateTime = ZonedDateTime.parse(timestamp);
+                                dateTime = ZonedDateTime.of(LocalDate.now(), LocalTime.parse(timestamp), zoneId);
                             } else {
                                 LocalDate date = getDateFromDayOfWeek(timestamp);
                                 dateTime = ZonedDateTime.parse(date.toString() + "T" + timestamp.substring(4,9) + ":00+01:00");

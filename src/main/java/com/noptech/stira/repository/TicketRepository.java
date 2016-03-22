@@ -21,4 +21,11 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     @Query("SELECT t from Ticket t where (t.jiraKey is not null and t.stormLastUpdated is null)" +
         " or (t.stormKey is not null and t.jiraLastUpdated is null) and t.flagged = false")
     List<Ticket> findWithMissingFields();
+
+    @Query("SELECT t from Ticket t where t.stormKey is not null and t.stormStatus <> t.jiraStatus")
+    List<Ticket> findWithDifferentStatus();
+
+    @Query("SELECT t from Ticket t where t.stormKey is not null and t.stormStatus = 'WAITING_SSE'" +
+        " and (t.jiraStatus <> 'WAITING_SSE' or t.jiraStatus is null)")
+    List<Ticket> findPendingSSEWithDifferentStatus();
 }

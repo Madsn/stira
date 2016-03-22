@@ -29,11 +29,19 @@
 
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
-        <createIndex indexName="idx_queued_for_upd_ticket_key"
-                     tableName="queued_for_update"
-                     unique="true">
-            <column name="ticket_key" type="varchar(255)"/>
-        </createIndex>
+        <addUniqueConstraint columnNames="ticket_source, ticket_key"
+                             constraintName="source_and_key"
+                             tableName="queued_for_update"
+                             />
+        <addNotNullConstraint columnName="ticket_source"
+                              columnDataType="varchar(255)"
+                              tableName="queued_for_update"/>
+        <addNotNullConstraint columnName="added_to_queue"
+                              columnDataType="timestamp"
+                              tableName="queued_for_update"/>
+        <addNotNullConstraint columnName="ticket_key"
+                              columnDataType="varchar(255)"
+                              tableName="queued_for_update"/>
 
     </changeSet>
 </databaseChangeLog>

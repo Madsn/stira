@@ -77,6 +77,24 @@ public class TicketResource {
         return ticketRepository.findAll();
             }
 
+    @RequestMapping(value = "/dashboard/ticketswarn",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<Ticket> getTicketsForDashWarn() {
+        log.debug("REST request to get dash Tickets with differing status");
+        return ticketRepository.findWithDifferentStatus();
+    }
+
+    @RequestMapping(value = "/dashboard/ticketserr",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public List<Ticket> getTicketsForDashError() {
+        log.debug("REST request to get dash Tickets pending SSE");
+        return ticketRepository.findPendingSSEWithDifferentStatus();
+    }
+
     /**
      * GET  /tickets/:id -> get the "id" ticket.
      */
