@@ -1,16 +1,18 @@
 package com.noptech.stira.service;
 
-import com.noptech.stira.domain.QueuedForUpdate;
-import com.noptech.stira.domain.Ticket;
-import com.noptech.stira.domain.enumeration.TicketSource;
-import com.noptech.stira.repository.QueuedForUpdateRepository;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
+import com.noptech.stira.domain.QueuedForUpdate;
+import com.noptech.stira.domain.Ticket;
+import com.noptech.stira.domain.enumeration.TicketSource;
+import com.noptech.stira.repository.QueuedForUpdateRepository;
 
 /**
  * Service Implementation for managing QueuedForUpdate.
@@ -24,7 +26,7 @@ public class QueuedForUpdateService {
     @Inject
     private QueuedForUpdateRepository queuedForUpdateRepository;
 
-    public void addToQueue(List<Ticket> tickets) {
+    public void addToQueue(List<Ticket> tickets) throws Exception {
         for (Ticket t : tickets) {
             QueuedForUpdate q = new QueuedForUpdate();
             if (t.getStormKey() != null && t.getJiraKey() != null) {
@@ -44,15 +46,21 @@ public class QueuedForUpdateService {
             } else if (t.getStormKey() != null && t.getStormLastUpdated() == null) {
                 q.setTicketSource(TicketSource.STORM);
                 q.setAddedToQueue(t.getStormLastUpdated());
-                q.setTicketKey(String.valueOf(t.getStormKey()));
+                q.setTicketKey(t.getStormKey());
             } else if (t.getStormKey() != null && t.getJiraLastUpdated() == null) {
-                q.setTicketSource(TicketSource.JIRA);
+                q.setTicketSource(TicketSource.STORM);
                 q.setAddedToQueue(t.getStormLastUpdated());
                 q.setTicketKey(t.getStormKey());
             } else if (t.getStormKey() != null) {
                 q.setTicketSource(TicketSource.STORM);
                 q.setTicketKey(t.getStormKey());
                 q.setAddedToQueue(t.getStormLastUpdated());
+            } else if (t.getJiraKey() != null) {
+                q.setTicketSource(TicketSource.JIRA);
+                q.setTicketKey(t.getJiraKey());
+                q.setAddedToQueue(t.getJiraLastUpdated());
+            } else {
+                throw new Exception("Did not expect ticket with status: " + t.toString());
             }
             log.debug("Saving queuedForUpdate entity: " + q.toString());
             QueuedForUpdate oldQ = queuedForUpdateRepository.findByTicketKeyAndSource(q.getTicketKey(), q.getTicketSource());
@@ -64,8 +72,10 @@ public class QueuedForUpdateService {
             }
         }
     }
+
     /**
      * Save a queuedForUpdate.
+     *
      * @return the persisted entity
      */
     public QueuedForUpdate save(QueuedForUpdate queuedForUpdate) {
@@ -75,8 +85,9 @@ public class QueuedForUpdateService {
     }
 
     /**
-     *  get all the queuedForUpdates.
-     *  @return the list of entities
+     * get all the queuedForUpdates.
+     *
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public List<QueuedForUpdate> findAll() {
@@ -86,8 +97,9 @@ public class QueuedForUpdateService {
     }
 
     /**
-     *  get one queuedForUpdate by id.
-     *  @return the entity
+     * get one queuedForUpdate by id.
+     *
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public QueuedForUpdate findOne(Long id) {
@@ -97,7 +109,7 @@ public class QueuedForUpdateService {
     }
 
     /**
-     *  delete the  queuedForUpdate by id.
+     * delete the  queuedForUpdate by id.
      */
     public void delete(Long id) {
         log.debug("Request to delete QueuedForUpdate : {}", id);
