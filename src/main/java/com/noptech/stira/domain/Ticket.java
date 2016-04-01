@@ -1,20 +1,29 @@
 package com.noptech.stira.domain;
 
-import com.noptech.stira.domain.enumeration.TicketStatus;
-import net.rcarz.jiraclient.Field;
-import net.rcarz.jiraclient.Issue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.noptech.stira.domain.enumeration.TicketStatus;
+
+import net.rcarz.jiraclient.Field;
+import net.rcarz.jiraclient.Issue;
 
 /**
  * A Ticket.
@@ -60,12 +69,16 @@ public class Ticket implements Serializable {
     @Column(name = "flagged")
     private boolean flagged;
 
+    @Column(name = "jira_assignee")
+    private String jiraAssignee;
+
     public Ticket(Issue issue) {
         this.jiraKey = issue.getKey();
         ZonedDateTime updated = ZonedDateTime.parse(issue.getField("updated").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxx"));
         this.jiraLastUpdated = updated;
         this.jiraTitle = issue.getSummary();
         this.jiraStatus = TicketStatus.parseFromString(issue.getStatus().getName());
+        this.jiraAssignee = issue.getAssignee() == null ? null : issue.getAssignee().toString();
         Object issueRef = issue.getField("customfield_11502");
         String issueRefString = issueRef != null ? Field.getString(issueRef) : null;
         if (issueRefString != null) {
@@ -154,7 +167,7 @@ public class Ticket implements Serializable {
             return false;
         }
         Ticket ticket = (Ticket) o;
-        if(ticket.id == null || id == null) {
+        if (ticket.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, ticket.id);
@@ -221,6 +234,8 @@ public class Ticket implements Serializable {
             this.setStormTitle(newValues.getStormTitle());
         if (newValues.isFlagged())
             this.flagged = newValues.isFlagged();
+        if (newValues.getJiraAssignee() != null)
+            this.jiraAssignee = newValues.getJiraAssignee();
     }
 
     public void setFlagged(boolean flagged) {
@@ -229,5 +244,13 @@ public class Ticket implements Serializable {
 
     public boolean isFlagged() {
         return flagged;
+    }
+
+    public String getJiraAssignee() {
+        return jiraAssignee;
+    }
+
+    public void setJiraAssignee(String jiraAssignee) {
+        this.jiraAssignee = jiraAssignee;
     }
 }

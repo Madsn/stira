@@ -5,18 +5,18 @@ angular.module('stiraApp')
 
         $scope.warn = true;
         $scope.tickets = [];
-        $scope.loadWarn = function() {
+        $scope.loadWarn = function () {
             $scope.warn = true;
-            DashboardWarn.query(function(result) {
-               $scope.tickets = result;
+            DashboardWarn.query(function (result) {
+                $scope.tickets = result;
             });
         };
         $scope.loadWarn();
 
-        $scope.loadErr = function() {
+        $scope.loadErr = function () {
             $scope.warn = false;
-            DashboardErr.query(function(result) {
-               $scope.tickets = result;
+            DashboardErr.query(function (result) {
+                $scope.tickets = result;
             });
         };
 
@@ -37,11 +37,12 @@ angular.module('stiraApp')
                 jiraLastUpdated: null,
                 stormLastUpdated: null,
                 mutedUntil: null,
+                jiraAssignee: null,
                 id: null
             };
         };
 
-        $scope.getRowAlertClasses = function(ticket) {
+        $scope.getRowAlertClasses = function (ticket) {
             if (ticket.jiraStatus === ticket.stormStatus) {
                 return '';
             } else if (ticket.jiraStatus === null && ticket.stormStatus !== null) {

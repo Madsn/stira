@@ -4,10 +4,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="queueSource.new" >
+                <button class="btn btn-primary" ui-sref="queueSource.new">
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span 
-                       >Create new QueueSource
+                    <span
+                    >Create new QueueSource
                     </span>
                 </button>
             </div>
@@ -17,41 +17,41 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span>ID</span></th>
-                    <th><span>TicketSource</span></th>
-                    <th><span>LastAddedTicket</span></th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th><span>ID</span></th>
+                <th><span>TicketSource</span></th>
+                <th><span>LastAddedTicket</span></th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="queueSource in queueSources track by queueSource.id">
-                    <td><a ui-sref="queueSource.detail({id:queueSource.id})">{{queueSource.id}}</a></td>
-                    <td translate="{{'stiraApp.TicketSource.' + queueSource.ticketSource}}">{{queueSource.ticketSource}}</td>
-                        <td>{{queueSource.lastAddedTicket | date:'mediumDate'}}</td>
-                    <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
-                            <button type="submit"
-                                    ui-sref="queueSource.detail({id:queueSource.id})"
-                                    class="btn btn-info btn-sm"> 
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="queueSource.edit({id:queueSource.id})"
-                                    class="btn btn-primary btn-sm">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="queueSource.delete({id:queueSource.id})"
-                                    class="btn btn-danger btn-sm">                                    
-                                <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm"></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+            <tr ng-repeat="queueSource in queueSources track by queueSource.id">
+                <td><a ui-sref="queueSource.detail({id:queueSource.id})">{{queueSource.id}}</a></td>
+                <td translate="{{'stiraApp.TicketSource.' + queueSource.ticketSource}}">{{queueSource.ticketSource}}</td>
+                <td>{{queueSource.lastAddedTicket | date:'medium'}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                ui-sref="queueSource.detail({id:queueSource.id})"
+                                class="btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <span class="hidden-xs hidden-sm"></span>
+                        </button>
+                        <button type="submit"
+                                ui-sref="queueSource.edit({id:queueSource.id})"
+                                class="btn btn-primary btn-sm">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="hidden-xs hidden-sm"></span>
+                        </button>
+                        <button type="submit"
+                                ui-sref="queueSource.delete({id:queueSource.id})"
+                                class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            <span class="hidden-xs hidden-sm"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

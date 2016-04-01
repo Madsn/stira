@@ -13,22 +13,24 @@
     <div class="table-responsive">
         <table class="jh-table table">
             <thead>
-                <tr>
-                    <th><span>StormKey</span></th>
-                    <th><span>JiraKey</span></th>
-                    <th><span>JiraTitle</span></th>
-                    <th><span>JiraStatus</span></th>
-                    <th><span>StormStatus</span></th>
-                </tr>
+            <tr>
+                <th><span>StormKey</span></th>
+                <th><span>JiraKey</span></th>
+                <th><span>JiraTitle</span></th>
+                <th><span>JiraStatus</span></th>
+                <th><span>StormStatus</span></th>
+                <th><span>Assignee</span></th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="ticket in tickets track by ticket.id" ng-class="getRowAlertClasses(ticket)">
-                    <td><a href="https://customer.tdchosting.com/tickets/tickets-details/?id={{ticket.stormKey}}">{{ticket.stormKey}}</a></td>
-                    <td><a href="http://support.systematic.com/browse/{{ticket.jiraKey}}">{{ticket.jiraKey}}</a></td>
-                    <td>{{ticket.jiraTitle}}</td>
-                    <td>{{ticket.jiraStatus}}</td>
-                    <td>{{ticket.stormStatus}}</td>
-                </tr>
+            <tr ng-repeat="ticket in tickets track by ticket.id" ng-class="getRowAlertClasses(ticket)">
+                <td><a href="https://customer.tdchosting.com/tickets/tickets-details/?id={{ticket.stormKey}}">{{ticket.stormKey}}</a></td>
+                <td><a href="http://support.systematic.com/browse/{{ticket.jiraKey}}">{{ticket.jiraKey}}</a></td>
+                <td>{{ticket.jiraTitle}}</td>
+                <td>{{ticket.jiraStatus}}</td>
+                <td>{{ticket.stormStatus}}</td>
+                <td>{{ticket.jiraAssignee}}</td>
+            </tr>
             </tbody>
         </table>
     </div>

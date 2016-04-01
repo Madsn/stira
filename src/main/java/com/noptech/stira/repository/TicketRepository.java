@@ -16,7 +16,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     Ticket findOneByJiraKey(String jiraKey);
 
-    @Query("SELECT t from Ticket t where t.jiraKey is not null and t.stormLastUpdated is null and t.stormKey is not null and t.flagged = false") List<Ticket> findWithMissingStormFields();
+    @Query("SELECT t from Ticket t where t.jiraKey is not null and t.stormLastUpdated is null"
+        + " and t.stormKey is not null and t.flagged = false") List<Ticket> findWithMissingStormFields();
 
     @Query("SELECT t from Ticket t where (t.jiraKey is not null and t.stormLastUpdated is null)" +
         " or (t.stormKey is not null and t.jiraLastUpdated is null) and t.flagged = false") List<Ticket> findWithMissingFields();

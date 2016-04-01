@@ -41,6 +41,8 @@
 
             <column name="flagged" type="boolean"/>
 
+            <column name="jira_assignee" type="varchar(255)"/>
+
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
 

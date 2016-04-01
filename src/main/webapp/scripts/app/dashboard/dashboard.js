@@ -16,8 +16,6 @@ angular.module('stiraApp')
                         controller: 'DashboardController'
                     }
                 },
-                resolve: {
-
-                }
+                resolve: {}
             });
     });
